@@ -3,3 +3,5 @@ requests
 boto3 
 sqlalchemy 
 mysql-connector-python
+pytest
+unittest
