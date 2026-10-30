@@ -26,7 +26,7 @@ jobs:
           python -m pip install -r requirements.txt
 
       - name: Run tests
-        run: python -m pytest -vv
+        run: python -m pytest -v
 
       - name: Build Docker image
         run: docker build --file dockerfile --tag nyc-pipeline:ci .
