@@ -34,4 +34,8 @@ def test_no_parquets():
     reading = ParquetReading({})
     with pytest.raises(ParquetReadingErrors):
         read = reading.read_data()
-    
+def test_no_files(caplog): 
+    reading = ParquetReading({'trips': []})
+    with caplog.at_level(logging.WARNING): 
+        read = reading.read_data()
+    assert 'Nenhum' in caplog.text
