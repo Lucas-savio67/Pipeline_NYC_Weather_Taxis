@@ -9,9 +9,10 @@ class APIReadingErrors(Exception):
 class APIReading(ReadingInterface): 
     def __init__(self, apis:dict[str,dict]) -> None: 
         self.apis = apis
-        self.read_apis: dict[str, Any] 
+        self.read_apis: dict[str, Any] = {}
+    #Send GET requisitions to the declarated APIs in self.apis 
     def read_data(self) -> dict[str,Any]:
-        #Send GET requisitions to the declarated APIs in self.apis 
+        
         if not self.apis: 
             logger.error("Erro, nenhum API foi declarada! ")
             raise APIReadingErrors('Erro, nenhum API foi declarada! ')

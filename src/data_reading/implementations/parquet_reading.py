@@ -17,6 +17,7 @@ class ParquetReading(ReadingInterface):
         for nome, files in self.parquet_files.items(): 
             logger.info(f'Lendo arquivos parquets no diretório {nome}...')
             concatenated_df = []
+            print(files)
             if not files: 
                 logger.warning(f"Nenhuma arquivo parquet em {nome} existe! ")
             else:

@@ -4,7 +4,7 @@ from utils.discover_parquets import discover_parquets
 from data.apis.apis_config import apis
 def reading_settings(): 
     files = { 
-        'yellow_taxis_trips': 'yellow_taxis_trips_NYC'
+        'yellow_taxis_trips': 'data/parquets/yellow_taxis_trips_NYC'
     }
     parquets = discover_parquets(files)
     implementations = {
