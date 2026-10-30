@@ -43,4 +43,6 @@ ruff_cache/
 Thumbs.db
 
 # Logs
-*.log
+*.log 
+
+data/
