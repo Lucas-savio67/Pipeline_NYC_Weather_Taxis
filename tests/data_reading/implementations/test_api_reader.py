@@ -1,6 +1,7 @@
 from unittest.mock import patch, Mock 
-from src.data_reading.implementations.api_reading import APIReading
+from src.data_reading.implementations.api_reading import APIReading, APIReadingErrors
 import requests
+import pytest
 import logging 
 logger = logging.getLogger(__name__)
 @patch('src.data_reading.implementations.api_reading.requests.get') 
@@ -31,3 +32,9 @@ def test_request_error(mock_get, caplog):
     with caplog.at_level(logging.WARNING):
             read = reading.read_data()
     assert 'ao enviar' in caplog.text
+def test_no_apis(): 
+    
+    reading = APIReading({})
+    
+    with pytest.raises(APIReadingErrors): 
+        read = reading.read_data()
