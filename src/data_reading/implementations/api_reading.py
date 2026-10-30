@@ -33,10 +33,9 @@ class APIReading(ReadingInterface):
                     self.read_apis[nome] = data 
                 except requests.exceptions.RequestException as e: 
                     logger.warning(f"Erro, {e} ao enviar a requisição! ")
-                except TypeError: 
-                    logger.warning("Erro, estrutura inválida encontrada! ")
+                
                 except json.JSONDecodeError: 
-                    logger.warning("Erro, objeto não serializável encontrado ")
+                    logger.warning("Erro, json inválido encontrado ")
                 except Exception as e: 
                     logger.warning(f"Erro: {str(e)}! ")
         logger.info("Finalizando o fluxo de leitura de APIs! ")

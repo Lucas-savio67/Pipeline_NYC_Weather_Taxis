@@ -1,5 +1,6 @@
 from unittest.mock import patch, Mock 
 from src.data_reading.implementations.api_reading import APIReading, APIReadingErrors
+import json
 import requests
 import pytest
 import logging 
@@ -38,3 +39,18 @@ def test_no_apis():
     
     with pytest.raises(APIReadingErrors): 
         read = reading.read_data()
+@patch('src.data_reading.implementations.api_reading.requests.get')
+def test_json_decode_error(mock_get, caplog): 
+    
+    mock_json = Mock()
+    mock_json.json.side_effect = json.JSONDecodeError("Json inválido! ", 'Resposta inválida', 0)
+    mock_get.return_value = mock_json
+    fake_apis = { 
+                'NasaPower': { 
+                    'url': 'url_fake'
+                }
+            }
+    reading = APIReading(fake_apis)
+    with caplog.at_level(logging.WARNING):
+        read = reading.read_data()
+    assert 'inválido' in caplog.text
