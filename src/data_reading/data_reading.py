@@ -14,6 +14,6 @@ class DataReading:
             logger.info("FLuxo de leitura dos dados finalizado! ")
             return leitura 
         except Exception as e: 
-            raise DataReadingErrors(f"Erro: {str(e)}! ")
+            logger.warning(f"Erro crítico: {str(e)}! ")
     
         
