@@ -30,3 +30,8 @@ def test_success_parquet_reading(tmp_path):
     reading = ParquetReading(parquets_files)
     read = reading.read_data()
     pd.testing.assert_frame_equal(fake_final_df, read['trips'])
+def test_no_parquets(): 
+    reading = ParquetReading({})
+    with pytest.raises(ParquetReadingErrors):
+        read = reading.read_data()
+    
