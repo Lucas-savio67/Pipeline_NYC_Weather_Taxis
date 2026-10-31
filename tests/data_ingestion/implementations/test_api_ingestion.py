@@ -1,10 +1,10 @@
 from unittest.mock import MagicMock, patch
 from pathlib import Path
 import json
-from src.data_ingestion.implementations.api_s3_ingestion import APIS3Ingestion
+from src.data_ingestion.implementations.api_s3_ingestion import APIS3Ingestion, APIIngestionErrors
 from botocore.exceptions import ClientError
 import logging 
-
+import pytest
 def test_success_api_ingestion():
 
 
@@ -50,3 +50,8 @@ def test_json_error(mock_dumps, caplog):
     with caplog.at_level(logging.WARNING):
         saver.save('bronze', data , 'bucket_falso')
     assert 'serializar' in caplog.text
+def test_no_data(): 
+    s3_client = MagicMock()
+    saver = APIS3Ingestion(s3_client)
+    with pytest.raises(APIIngestionErrors): 
+        saver.save('bronze', {} , 'bucket_falso')
