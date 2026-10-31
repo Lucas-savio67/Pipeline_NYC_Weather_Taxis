@@ -26,5 +26,5 @@ class APIS3Ingestion(IngestionInterface):
             logger.warning(f"Erro ao injetar as APIs para o bucket: {str(e)}")
         except (TypeError, ValueError, UnicodeEncodeError) as e: 
             logger.warning(f"Erro ao serializar os arquivos JSONs: {str(e)}") 
-        logger.info("Fluxo d eingestão de APIs (JSONs) terminando...")
+        logger.info("Fluxo de ingestão de APIs (JSONs) terminando...")
         return 'Dados injetados com sucesso! '

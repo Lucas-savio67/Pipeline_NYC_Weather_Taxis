@@ -13,6 +13,7 @@ class ParquetIngestionS3(IngestionInterface):
             try :
                 for file in files: 
                     file_name = f'{layer}/{nome}/{file}'
+                    
                     self.client.upload_file(file, bucket_name, file_name)
             except (OSError, ClientError, BotoCoreError) as e: 
                 logger.warning(f"Erro ao injetar os parquets no S3: {str(e)}")
