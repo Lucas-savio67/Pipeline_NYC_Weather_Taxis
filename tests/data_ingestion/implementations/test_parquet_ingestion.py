@@ -27,3 +27,32 @@ def test_no_data():
                 {} , 
                 'bucket_falso'
             )
+def test_clienterror(caplog): 
+    s3_client = MagicMock()
+    s3_client.upload_file.side_effect = ClientError(
+        {
+            "Error": {
+                "Code": "AccessDenied",
+                "Message": "Access denied"
+            }
+        },
+        "UploadFile"
+        )
+    saver = ParquetIngestionS3(s3_client)
+    with caplog.at_level(logging.WARNING):
+        saver.save(
+                        'bronze' , 
+                        {'yellow_taxis_trips': ['taxis_trips.parquet']} , 
+                        'bucket_falso'
+                    )
+    assert 'injetar' in caplog.text
+def test_no_parquet_file(caplog): 
+    s3_client = MagicMock()
+    saver = ParquetIngestionS3(s3_client)
+    with caplog.at_level(logging.WARNING):
+        saver.save(
+                                'bronze' , 
+                                {'yellow_taxis_trips': []} , 
+                                'bucket_falso'
+                            )
+    assert 'referente' in caplog.text
