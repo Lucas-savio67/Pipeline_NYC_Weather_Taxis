@@ -6,3 +6,6 @@ mysql-connector-python
 pytest
 pyarrow
 fastparquet
+dotenv 
+boto3-stubs[s3]
+moto[s3]
