@@ -6,3 +6,5 @@ mysql-connector-python
 pytest
 pyarrow
 fastparquet
+dotenv 
+mypy_boto3_s3
