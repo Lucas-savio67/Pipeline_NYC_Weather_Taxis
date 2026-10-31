@@ -16,7 +16,7 @@ class APIS3Ingestion(IngestionInterface):
         logger.info("Começando o fluxo de ingestão de APIs no bucket S3...")
         try :
             for nome, conteudo in data.items(): 
-                file= f'{layer}/{nome}.json'
+                file= f'{layer}/JSONs/{nome}/{nome}.json'
                 self.client.put_object(
                     Bucket=bucket_name , 
                     Key=file ,
