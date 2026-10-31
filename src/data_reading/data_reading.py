@@ -11,7 +11,7 @@ class DataReading:
         logger.info("Iniciando a leitura dos dados! ")
         try:
             leitura  = self.data_reading.read_data()
-            logger.info("FLuxo de leitura dos dados finalizado! ")
+            logger.info("Fluxo de leitura dos dados finalizado! ")
             return leitura 
         except Exception as e: 
             logger.warning(f"Erro crítico: {str(e)}! ")

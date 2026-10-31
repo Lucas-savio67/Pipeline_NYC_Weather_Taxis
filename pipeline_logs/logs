@@ -1,11 +1,6 @@
-2026-10-30 17:24:44,473 - INFO - Iniciando a leitura dos dados! 
-2026-10-30 17:24:44,473 - INFO - Iniciando o fluxo de leitura de APIs! 
-2026-10-30 17:24:44,473 - INFO - Lendo a API NasaPower...
-2026-10-30 17:24:45,869 - INFO - A API NasaPower foi lida com sucesso! 
-2026-10-30 17:24:45,869 - INFO - Finalizando o fluxo de leitura de APIs! 
-2026-10-30 17:24:45,870 - INFO - FLuxo de leitura dos dados finalizado! 
-2026-10-30 17:24:45,870 - INFO - Iniciando a leitura dos dados! 
-2026-10-30 17:24:45,870 - INFO - Iniciando o fluxo de leitura de arquivos parquet...
-2026-10-30 17:24:45,870 - INFO - Lendo arquivos parquets no diretório yellow_taxis_trips...
-2026-10-30 17:24:51,395 - INFO - Finalizando o fluxo de leitura de parquets! 
-2026-10-30 17:24:51,397 - INFO - FLuxo de leitura dos dados finalizado! 
+2026-10-31 13:36:03,047 - INFO - Iniciando a leitura dos dados! 
+2026-10-31 13:36:03,047 - INFO - Iniciando o fluxo de leitura de APIs! 
+2026-10-31 13:36:03,047 - INFO - Lendo a API NasaPower...
+2026-10-31 13:36:04,732 - INFO - A API NasaPower foi lida com sucesso! 
+2026-10-31 13:36:04,733 - INFO - Finalizando o fluxo de leitura de APIs! 
+2026-10-31 13:36:04,734 - INFO - FLuxo de leitura dos dados finalizado! 
