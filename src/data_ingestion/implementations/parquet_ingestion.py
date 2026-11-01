@@ -17,6 +17,7 @@ class ParquetIngestionS3(IngestionInterface):
         for nome, files in data.items(): 
             if not files: 
                 logger.warning(f"Erro, nenhuma parquet referente a {nome} existe! ")
+                errors[nome] = {'error': 'no_files'}
             logger.info(f"Injetando parquets referentes a {nome}... ")
             try :
                 for file in files: 
@@ -24,7 +25,7 @@ class ParquetIngestionS3(IngestionInterface):
                     
                     self.client.upload_file(file, bucket_name, file_name)
             except (OSError, ClientError, BotoCoreError) as e: 
-                logger.warning(f"Erro ao injeta o parquet {file} no S3: {str(e)}")
+                logger.warning(f"Erro ao injetar o parquet {file} no S3: {str(e)}")
                 errors[nome] = {'error': str(e)}
         logger.info("Finalizando o fluxo de ingestão de parquets...")
         return errors

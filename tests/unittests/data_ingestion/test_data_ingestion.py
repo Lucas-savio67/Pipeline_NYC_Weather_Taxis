@@ -7,7 +7,7 @@ def test_success_data_ingestion():
     api_saver = APIS3Ingestion(s3_client)
     saver = DataIngestion(api_saver)
     general =saver.ingest_general_data('bronze', {'NasaPower': {'data': [1,2,3], 'status':'success'}}, 'bucket_falso')
-    assert general == 'Dados injetados com sucesso no S3! '
+    assert general == 'Dados injetados no S3, verifique se algum deu erro! '
 def test_critical_error(caplog): 
     s3_client = MagicMock()
     api_saver = APIS3Ingestion(s3_client)
