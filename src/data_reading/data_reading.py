@@ -12,8 +12,12 @@ class DataReading:
         try:
             leitura  = self.data_reading.read_data()
             logger.info("Fluxo de leitura dos dados finalizado! ")
-            return leitura 
+            if leitura[1]:
+                logger.warning(f'APIs com erro: {leitura[1]}')
+            logger.info(f"APIs lidas com sucesso: {leitura[0].keys()}")
+            return leitura[0] 
         except Exception as e: 
             logger.warning(f"Erro crítico: {str(e)}! ")
+            return {}
     
         
