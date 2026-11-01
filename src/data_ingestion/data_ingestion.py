@@ -9,8 +9,9 @@ class DataIngestion:
         logger.info("Iniciando fluxo de ingestão dos dados...")
         try : 
             ingestion = self.data_ingestion.save(layer, data, bucket_name)
-            
-            return 'Dados injetados com sucesso no S3! '
+            if ingestion: 
+                logger.warning(f'Dados com erro: {ingestion}')
+            return 'Dados injetados no S3, verifique se algum deu erro! '
         except Exception as e: 
             logger.warning(f"Erro crítico: {str(e)}")
         logger.info("Finalizando fluxo de ingestão dos dados...")
