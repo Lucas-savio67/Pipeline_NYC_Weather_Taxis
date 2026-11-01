@@ -9,7 +9,8 @@ class APIIngestionErrors(Exception):
 class APIS3Ingestion(IngestionInterface): 
     def __init__(self, s3_client:S3Client) -> None: 
         self.client = s3_client
-    def save(self, layer, data, bucket_name) -> str:
+    def save(self, layer, data, bucket_name) -> dict[str, dict]:
+        errors = {}
         if not data: 
             logger.error("Erro, nenhuma API foi lida! ")
             raise  APIIngestionErrors("Erro, nenhuma API foi lida! ")
@@ -24,7 +25,9 @@ class APIS3Ingestion(IngestionInterface):
                 )
         except (ClientError, BotoCoreError) as e: 
             logger.warning(f"Erro ao injetar as APIs para o bucket: {str(e)}")
+            errors[nome] = {'error': str(e)}
         except (TypeError, ValueError, UnicodeEncodeError) as e: 
-            logger.warning(f"Erro ao serializar os arquivos JSONs: {str(e)}") 
+            logger.warning(f"Erro ao serializar os arquivos JSONs: {str(e)}")
+            errors[nome] = {'error': str(e)}
         logger.info("Fluxo de ingestão de APIs (JSONs) terminando...")
-        return 'Dados injetados com sucesso! '
+        return errors
