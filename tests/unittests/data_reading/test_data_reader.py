@@ -19,13 +19,14 @@ def test_success_data_reading(mock_get, caplog):
     with caplog.at_level(logging.INFO):
         read = reading.read_general_data()
     assert read == {'NasaPower': {'data': [1,2,3], 'status': 'success'}}
-    assert f'APIs lidas com sucesso: {read.keys()}'
+    assert f'APIs lidas com sucesso: {read.keys()}' in caplog.text
 def test_critical_error(caplog): 
     implementation = APIReading({})
     reading = DataReading(implementation)
     with caplog.at_level(logging.WARNING):
         read = reading.read_general_data()
     assert 'crítico' in caplog.text
+    assert read == {}
 @patch('src.data_reading.implementations.api_reading.requests.get')
 def test_no_critical_error(mock_get, caplog): 
     mock_get.side_effect = RequestException('Erro na requisição')

@@ -14,9 +14,10 @@ class DataReading:
             logger.info("Fluxo de leitura dos dados finalizado! ")
             if leitura[1]:
                 logger.warning(f'APIs com erro: {leitura[1]}')
-            logger.info(f"APIs extraídas com sucesso: {leitura[0].keys()}")
+            logger.info(f"APIs lidas com sucesso: {leitura[0].keys()}")
             return leitura[0] 
         except Exception as e: 
             logger.warning(f"Erro crítico: {str(e)}! ")
+            return {}
     
         
