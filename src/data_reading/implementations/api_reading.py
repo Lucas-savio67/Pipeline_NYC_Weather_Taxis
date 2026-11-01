@@ -12,7 +12,7 @@ class APIReading(ReadingInterface):
         self.read_apis: dict[str, Any] = {}
     #Send GET requisitions to the declarated APIs in self.apis 
     def read_data(self) -> dict[str,Any]:
-        
+        errors = {}
         if not self.apis: 
             logger.error("Erro, nenhum API foi declarada! ")
             raise APIReadingErrors('Erro, nenhum API foi declarada! ')
@@ -33,12 +33,15 @@ class APIReading(ReadingInterface):
                     self.read_apis[nome] = data 
                 except requests.exceptions.RequestException as e: 
                     logger.warning(f"Erro, {e} ao enviar a requisição! ")
-                
-                except json.JSONDecodeError: 
+                    errors[nome] == {'error': str(e)}
+                except json.JSONDecodeError as e: 
+                    
                     logger.warning("Erro, json inválido encontrado ")
+                    errors[nome] == {'error': str(e)}
                 except Exception as e: 
                     logger.warning(f"Erro: {str(e)}! ")
+                    errors[nome] == {'error': str(e)}
         logger.info("Finalizando o fluxo de leitura de APIs! ")
-        return self.read_apis
+        return self.read_apis, errors
 
 
