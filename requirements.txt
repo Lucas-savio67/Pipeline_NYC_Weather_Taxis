@@ -9,3 +9,4 @@ fastparquet
 dotenv 
 boto3-stubs[s3]
 moto[s3]
+io
