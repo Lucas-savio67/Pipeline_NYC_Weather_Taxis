@@ -12,7 +12,7 @@ class DataExtraction:
         try :
             extracted_data, errors = self.extraction.extract(bucket_name,layer)
             if errors: 
-                logger.warning(f'Arquivos que derma erro na extração: {errors}')
+                logger.warning(f'Arquivos que deram erro na extração: {errors}')
             logger.info(f"Arquivos extraídos com sucesso: {extracted_data.keys()}")
             return extracted_data 
         except Exception as e: 

@@ -1,6 +1,8 @@
 from src.data_extraction.data_extraction import DataExtraction, DataReadingErrors 
-from src.data_extraction.implementations.json_extractor import JsonExtractor 
+from src.data_extraction.implementations.json_extractor import JsonExtractor, JSONExtractorErrors
 from unittest.mock import MagicMock
+import pytest 
+from botocore.exceptions import ClientError
 import json
 import logging
 def test_success_data_extraction(caplog): 
@@ -22,3 +24,29 @@ def test_success_data_extraction(caplog):
     expected_outcome = {key:expected_json}
     assert f"Arquivos extraídos com sucesso: {expected_outcome.keys()}" in caplog.text
     assert extract== {key:expected_json}
+def test_critical_error(): 
+    s3_client = MagicMock()
+    s3_client.get_paginator.return_value.paginate.side_effect = ClientError(
+            {"Error": {"Code": "AccessDenied", "Message": "Access denied"}},
+            "ListObjectsV2",
+    )
+    
+    json_extractor = JsonExtractor(s3_client) 
+    
+    with pytest.raises(DataReadingErrors): 
+        DataExtraction(json_extractor).extract_general_data('bucket_falso', 'bronze')
+def test_no_critical_error(caplog): 
+    key = "bronze/JSONs/NasaPower/NasaPower.json"
+    s3_client = MagicMock()
+    s3_client.get_paginator.return_value.paginate.return_value = [
+            {"Contents": [{"Key": key}]}
+    ]
+    s3_client.get_object.return_value = {"Body": MagicMock()}
+    s3_client.get_object.return_value["Body"].read.return_value = b"{invalid}"
+    
+    json_extractor = JsonExtractor(s3_client)
+    
+    with caplog.at_level(logging.WARNING):
+        DataExtraction(json_extractor).extract_general_data('bucket_falso', 'bronze')
+    error = {key: {'error': 'Expecting property name enclosed in double quotes'}}
+    assert f'Arquivos que deram erro na extração: {error}'
