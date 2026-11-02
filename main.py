@@ -1,7 +1,8 @@
 from config.logging_config import logging 
 from src.data_reading.data_reading import DataReading 
 from src.data_ingestion.data_ingestion import DataIngestion
-from config.settings import reading_settings, ingestion_settings
+from src.data_extraction.data_extraction import DataExtraction
+from config.settings import reading_settings, ingestion_settings, extraction_settings
 def main():
     settings = reading_settings()
     read_data = {}
@@ -18,6 +19,12 @@ def main():
         else: 
 
             ingest = ingestion.ingest_general_data('bronze', read_data[nome], implementations[1])
-        
+    settings =   extraction_settings()
+    extracted_data = {}
+    for nome, implementations in settings.items(): 
+        extraction = DataExtraction(implementations[0])
+        extract = extraction.extract_general_data(implementations[1], 'bronze')
+        extracted_data[nome] = extract
+        print(extract)
     return 'Fluxo finalizado com sucesso! '
 print(main())
