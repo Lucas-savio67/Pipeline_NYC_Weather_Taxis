@@ -1,4 +1,4 @@
-from src.data_extraction.data_extraction import DataExtraction, DataReadingErrors 
+from src.data_extraction.data_extraction import DataExtraction
 from src.data_extraction.implementations.json_extractor import JsonExtractor, JSONExtractorErrors
 from unittest.mock import MagicMock
 import pytest 
@@ -34,12 +34,12 @@ def test_critical_error(caplog):
     json_extractor = JsonExtractor(s3_client) 
     
     with caplog.at_level(logging.ERROR):
-        with pytest.raises(DataReadingErrors):
-            DataExtraction(json_extractor).extract_general_data(
+            extraction = DataExtraction(json_extractor).extract_general_data(
                 'bucket_falso', 'bronze'
             )
 
-    assert "Erro crítico, impossível extrair os dados!" in caplog.text
+    assert "Erro crítico, impossível extrair os dados: " in caplog.text
+    assert extraction == {}
 def test_no_critical_error(caplog): 
     key = "bronze/JSONs/NasaPower/NasaPower.json"
     s3_client = MagicMock()

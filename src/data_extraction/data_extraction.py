@@ -2,8 +2,7 @@ from src.data_extraction.interfaces.extraction_interface import ExtractionInterf
 from typing import Any
 import logging 
 logger = logging.getLogger(__name__)
-class DataReadingErrors(Exception): 
-    pass
+
 class DataExtraction: 
     def __init__(self, extraction:ExtractionInterface) -> None: 
         self.extraction = extraction 
