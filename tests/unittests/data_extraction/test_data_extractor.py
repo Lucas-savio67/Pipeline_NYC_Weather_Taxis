@@ -24,7 +24,7 @@ def test_success_data_extraction(caplog):
     expected_outcome = {key:expected_json}
     assert f"Arquivos extraídos com sucesso: {expected_outcome.keys()}" in caplog.text
     assert extract== {key:expected_json}
-def test_critical_error(): 
+def test_critical_error(caplog):
     s3_client = MagicMock()
     s3_client.get_paginator.return_value.paginate.side_effect = ClientError(
             {"Error": {"Code": "AccessDenied", "Message": "Access denied"}},
@@ -33,8 +33,13 @@ def test_critical_error():
     
     json_extractor = JsonExtractor(s3_client) 
     
-    with pytest.raises(DataReadingErrors): 
-        DataExtraction(json_extractor).extract_general_data('bucket_falso', 'bronze')
+    with caplog.at_level(logging.ERROR):
+        with pytest.raises(DataReadingErrors):
+            DataExtraction(json_extractor).extract_general_data(
+                'bucket_falso', 'bronze'
+            )
+
+    assert "Erro crítico, impossível extrair os dados!" in caplog.text
 def test_no_critical_error(caplog): 
     key = "bronze/JSONs/NasaPower/NasaPower.json"
     s3_client = MagicMock()
@@ -48,5 +53,6 @@ def test_no_critical_error(caplog):
     
     with caplog.at_level(logging.WARNING):
         DataExtraction(json_extractor).extract_general_data('bucket_falso', 'bronze')
-    error = {key: {'error': 'Expecting property name enclosed in double quotes'}}
-    assert f'Arquivos que deram erro na extração: {error}'
+    assert "Arquivos que deram erro na extração" in caplog.text
+    assert key in caplog.text
+    assert "Expecting property name enclosed in double quotes" in caplog.text
