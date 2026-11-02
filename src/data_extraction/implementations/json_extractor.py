@@ -41,7 +41,7 @@ class JsonExtractor(ExtractionInterface):
                             errors[caminho_s3] = {'error': str(e)}
                 else: 
                     logger.warning(f"Nenhum objeto foi encontrado na página: {page}! ")
-                    errors[page] = {'error': 'No_object'}
+                    errors['empty_page'] = {'error': 'No_object'}
         except ClientError as e: 
             logger.warning(f"Erro ao listar os objetos: {str(e)}")
             raise JSONExtractorErrors(f"Erro ao listar os objetos: {str(e)}")
