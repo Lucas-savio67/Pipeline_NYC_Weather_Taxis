@@ -16,5 +16,7 @@ class DataExtraction:
             logger.info(f"Arquivos extraídos com sucesso: {extracted_data.keys()}")
             return extracted_data 
         except Exception as e: 
-            logger.error("Erro crítico, impossível extrair os dados! ")
-            raise DataReadingErrors
+            logger.error(f"Erro crítico, impossível extrair os dados: {str(e)} ")
+            return {}
+        
+            

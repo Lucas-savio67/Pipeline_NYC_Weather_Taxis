@@ -2,8 +2,7 @@ from src.data_reading.interfaces.reading_interface import ReadingInterface
 from typing import Any
 import logging 
 logger = logging.getLogger(__name__)
-class DataReadingErrors(Exception): 
-    pass
+
 class DataReading: 
     def __init__(self, data_reading:ReadingInterface) -> None: 
         self.data_reading = data_reading 
