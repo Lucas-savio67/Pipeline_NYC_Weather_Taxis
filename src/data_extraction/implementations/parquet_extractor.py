@@ -16,7 +16,7 @@ class ParquetExtractor(ExtractionInterface):
         try : 
             logger.info("Iniciando o fluxo de extração de parquets...")
             paginator = self.client.get_paginator('list_objects_v2')
-            pages = paginator.paginate(Bucket = bucket_name, Prefix=f'{layer}/Parquets/')
+            pages = paginator.paginate(Bucket = bucket_name, Prefix=f'{layer}/parquets/')
             for page in pages: 
                 if 'Contents' in page: 
                     for object in page['Contents']: 
