@@ -1,23 +1,34 @@
 from config.logging_config import logging 
-from src.data_reading.data_reading import DataReading 
+from src.data_reading.data_reading import DataReading
 from src.data_ingestion.data_ingestion import DataIngestion
-from config.settings import reading_settings, ingestion_settings
+from src.data_extraction.data_extraction import DataExtraction
+logger = logging.getLogger(__name__)
+from config.settings import reading_settings, ingestion_settings, extraction_settings
 def main():
-    settings = reading_settings()
-    read_data = {}
-    for nome, implementations in settings.items(): 
+    try :
+        settings = reading_settings()
+        read_data = {}
+        for nome, implementations in settings.items(): 
 
-        reading = DataReading(implementations)
-        read = reading.read_general_data()
-        read_data[nome] = read 
-    settings = ingestion_settings()
-    for nome, implementations in settings.items(): 
-        ingestion = DataIngestion(implementations[0])
-        if nome == 'Parquets': 
-            ingest = ingestion.ingest_general_data('bronze', implementations[2], implementations[1] )
-        else: 
+            reading = DataReading(implementations)
+            read = reading.read_general_data()
+            read_data[nome] = read 
+        settings = ingestion_settings()
+        for nome, implementations in settings.items(): 
+            ingestion = DataIngestion(implementations[0])
+            if nome == 'Parquets': 
+                ingest = ingestion.ingest_general_data('bronze', implementations[2], implementations[1] )
+            else: 
 
-            ingest = ingestion.ingest_general_data('bronze', read_data[nome], implementations[1])
-        
-    return 'Fluxo finalizado com sucesso! '
+                ingest = ingestion.ingest_general_data('bronze', read_data[nome], implementations[1])
+        settings =   extraction_settings()
+        extracted_data = {}
+        for nome, implementations in settings.items(): 
+            extraction = DataExtraction(implementations[0])
+            extract = extraction.extract_general_data(implementations[1], 'bronze')
+            extracted_data[nome] = extract
+            print(extract)
+        return 'Fluxo finalizado com sucesso! '
+    except Exception as e: 
+        logger.warning(f"Erro {str(e)} ao executar o Pipeline! ")
 print(main())
