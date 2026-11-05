@@ -3,7 +3,8 @@ from src.data_ingestion.implementations.api_s3_ingestion import APIS3Ingestion
 from src.data_ingestion.implementations.parquet_ingestion import ParquetIngestionS3
 from src.data_extraction.implementations.parquet_extractor import ParquetExtractor 
 from src.data_extraction.implementations.json_extractor import JsonExtractor
-
+from src.data_transforming.implementations.jsons.nasa_power_transformation import NasaPowerTransformation
+from config.data_transforming_rules.nasa_power_rules import rules
 from pathlib import Path
 import boto3
 from dotenv import load_dotenv
@@ -29,7 +30,7 @@ def ingestion_settings(client, bucket_name) -> dict[str]:
 def extraction_settings(client, bucket_name) -> dict[str]: 
     
     implementations = { 
-        'APIs': [JsonExtractor(client) , bucket_name],
+        'JSON': [JsonExtractor(client) , bucket_name],
         'Parquets': [ParquetExtractor(client), bucket_name]
     }
     return implementations
