@@ -25,7 +25,8 @@ class NasaPowerTransformation(TransformingInterface):
             return transformed_data, errors
         except NasaPowerTransformation: 
             critical_error['NasaPower'] = {'error': 'Não foi possível estruturar o JSON NasaPower! '}
-            return critical_error 
+            raise NasaPowerTransformation(critical_error)
+
             
 
         
