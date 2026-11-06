@@ -23,9 +23,9 @@ class NasaPowerTransformation(TransformingInterface):
             logger.info("Fluxo de transformação do JSON NasaPower finalizado! ")
 
             return transformed_data, errors
-        except NasaPowerTransformation: 
-            critical_error['NasaPower'] = {'error': 'Não foi possível estruturar o JSON NasaPower! '}
-            raise NasaPowerTransformation(critical_error)
+        except NasaPowerErrors as e: 
+            critical_error['NasaPower'] = {'error': str(e)}
+            raise NasaPowerErrors(critical_error)
 
             
 
