@@ -8,11 +8,11 @@ class NasaPowerErrors(Exception):
 class NasaPowerTransformation(TransformingInterface): 
     def __init__(self, nasa_power_rules:dict[str,Any]) -> None: 
         self.rules = nasa_power_rules 
-    def transform(self, data:Any, nome:str ) -> tuple[dict[str,pd.DataFrame], dict[str,dict]]:
+    def transform(self, data:Any) -> tuple[dict[str,pd.DataFrame], dict[str,dict]]:
         critical_error = {}
         normal_errors = {}
         if not data or data is None: 
-            raise NasaPowerErrors(f"Erro, não há nenhuma dado referente a: {nome}! ")
+            raise NasaPowerErrors(f"Erro, não há nenhuma dado referente a NasaPower! ")
         try :
             transformed_data = {}
             logger.info("Iniciando o fluxo de transformação do JSON NasaPower! ")

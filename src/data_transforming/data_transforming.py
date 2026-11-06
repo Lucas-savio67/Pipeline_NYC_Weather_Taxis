@@ -7,7 +7,7 @@ class DataTransforming:
         self.interface = interface 
     def transform_general_data(self, data:Any, nome:str) -> dict[str]: 
         try :
-            transformed_data, errors = self.interface.transform(data, nome)
+            transformed_data, errors = self.interface.transform(data)
             if errors: 
                 logger.warning(f"Erros de estruturação de {nome}: {errors}! ")
             logger.info(f"Dados transformados com sucesso: {transformed_data.keys()}")
