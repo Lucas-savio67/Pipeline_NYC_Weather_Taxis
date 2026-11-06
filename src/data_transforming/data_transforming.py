@@ -10,7 +10,7 @@ class DataTransforming:
         try :
             transformed_data, errors = self.interface.transform(data)
             if errors: 
-                logger.warning(f"Erros de estruturação de {nome}: {errors}! ")
+                logger.warning(f"Erros de transformação de {nome}: {errors}! ")
             logger.info(f"Dados transformados com sucesso: {transformed_data.keys()}")
             return transformed_data
         except Exception as e: 

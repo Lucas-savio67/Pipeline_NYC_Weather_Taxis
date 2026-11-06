@@ -38,5 +38,36 @@ def test_success_data_transforming(caplog):
     success_transforming = {'NasaPower': 'data_example'}
     pd.testing.assert_frame_equal(transform['NasaPower'], expected_df)
     assert f'{success_transforming.keys()}' in caplog.text
-        
-    
+def test_critical_error(caplog): 
+    fake_rules = {
+        'fake_rule': 'fake'
+    }
+    json_transforming = NasaPowerTransformation(fake_rules) 
+    transforming = DataTransforming(json_transforming)
+    with caplog.at_level(logging.ERROR): 
+        transforming.transform_general_data({}, 'NasaPower')
+    assert 'crítico' in caplog.text
+def test_no_critical_error(caplog): 
+    fake_rules = { 
+                'important_columns': ['data', 'data_2', 'data_index'],
+                'datetime_columns': { 
+                            'data_hora_fake': {'format': '%Y%m%d%H'}
+                    },
+                        
+            }
+    fake_data = { 
+                'data': { 
+                    'data_2':  {
+                        'data_hora': ['2020010100', '2020010101', '2020010102'],
+                        'data_3': [1,2,3], 
+                        'data_4': [4,5,6],
+                        
+                    }
+                }
+            }
+    json_transforming = NasaPowerTransformation(fake_rules)
+    transforming = DataTransforming(json_transforming) 
+    with caplog.at_level(logging.WARNING): 
+        transforming.transform_general_data(fake_data, 'NasaPower')
+    error = {'data_hora_fake': {'error': "'data_hora_fake'"}}
+    assert f"Erros de transformação de NasaPower: {error}! " in caplog.text
