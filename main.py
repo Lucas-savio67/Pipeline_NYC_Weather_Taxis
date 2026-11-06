@@ -38,7 +38,17 @@ def main():
             extract = extraction.extract_general_data(implementations[1], 'bronze')
             extracted_data[nome] = extract
         settings = specific_transforming_settings()
-         
+        for tipo, info in extracted_data.items(): 
+            if tipo == "JSON": 
+                jsons = settings.get('JSON')
+                for nome, implementation in jsons.items(): 
+                    transforming = DataTransforming(implementation)
+                    transform = transforming.transform_general_data(info[nome], nome)
+            else: 
+                parquets = settings.get('parquets')
+                for nome, implementation in parquets.items(): 
+                    transforming = DataTransforming(implementation)
+                    transform = transforming.transform_general_data(info, nome)                
                 
                 
         return 'Fluxo finalizado com sucesso! '

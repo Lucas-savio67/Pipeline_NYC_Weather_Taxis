@@ -39,7 +39,7 @@ def extraction_settings(client, bucket_name) -> dict[str]:
     return implementations
 def specific_transforming_settings(): 
     implementations = { 
-        'bronze/JSONs/NasaPower/NasaPower.json': NasaPowerTransformation(nasa_power_rules) , 
-        'yellow_taxis_trips':  TaxisTripsTransformer(validate_schema, taxis_trips_rules)
+        'JSON' :{'bronze/JSONs/NasaPower/NasaPower.json': NasaPowerTransformation(nasa_power_rules)} , 
+        'parquets' :{'yellow_taxis_trips':  TaxisTripsTransformer(validate_schema, taxis_trips_rules)}
     }
     return implementations

@@ -1,11 +1,12 @@
 from src.data_transforming.interfaces.transformation_interface import TransformingInterface 
 from typing import Any 
 import logging 
+import pandas as pd
 logger = logging.getLogger(__name__)
 class DataTransforming: 
     def __init__(self, interface:TransformingInterface) -> None: 
         self.interface = interface 
-    def transform_general_data(self, data:Any, nome:str) -> dict[str]: 
+    def transform_general_data(self, data:Any, nome:str) -> Any:
         try :
             transformed_data, errors = self.interface.transform(data)
             if errors: 

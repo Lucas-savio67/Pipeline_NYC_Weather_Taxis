@@ -1,18 +1,19 @@
 import pandas as pd
 from typing import Any
 
-def validate_schema(df: pd.DataFrame, rules:dict[str,Any]) -> tuple[bool, dict[str, str]]:
+def validate_schema(df: pd.DataFrame, rules: dict[str, Any]) -> tuple[bool, list[str]]:
 
-    columns = df.columns.to_list
+    columns = df.columns.to_list()
+    difference = [column for column in rules['essential_schema'] if column not in columns]
 
     essential = all(column in columns for column in rules['essential_schema'])
     if essential: 
-        difference = [coluna for coluna in rules['essential_schema'] if coluna not in columns]
         types = df[rules['essential_schema']].dtypes.astype(str).tolist()
-        if types== rules['columns_types']: 
-            return True, {}
+        expected_types = rules['columns_types']
+        if types == expected_types:
+            return True, []
         else: 
-            column_difference = [tipo for tipo in rules['columns_types'] if tipo not in types]
+            column_difference = [coluna for coluna in  types if coluna not in expected_types]
             return False, column_difference
     else: 
         return essential, difference

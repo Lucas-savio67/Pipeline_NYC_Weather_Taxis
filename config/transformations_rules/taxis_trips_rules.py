@@ -13,10 +13,9 @@ taxis_trips_rules = {
         'int32', 
         'datetime64[us]',
         'datetime64[us]' , 
+        'int32',
+        'int32',
         'float64',
-        'int32',
-        'int32',
-        'int32'
+        'int64'
     ] 
 }
-
