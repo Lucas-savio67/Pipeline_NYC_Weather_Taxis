@@ -60,7 +60,7 @@ def test_success_np_transforming_end_to_end():
                 
     }
     transforming = NasaPowerTransformation(fake_rules)
-    transformed_data, errors = transforming.transform(fake_data, 'NasaPower')
+    transformed_data, errors = transforming.transform(fake_data,)
 
     expected_df = pd.DataFrame({
         'data_index': [0, 1, 2],
@@ -81,7 +81,7 @@ def test_no_data():
     }
     transforming = NasaPowerTransformation(fake_rules)
     with pytest.raises(NasaPowerErrors):
-        transforming.transform({}, 'NasaPower')
+        transforming.transform({})
 def test_key_error(): 
     fake_rules = { 
         'important_columns': ['data_fake']
