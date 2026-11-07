@@ -10,7 +10,7 @@ class TaxisTripsTransformer(TransformingInterface):
     def __init__(self, schema_validator:validate_schema, taxis_trips_rules:dict[str,Any]) -> None: 
         self.schema_validator = schema_validator
         self.rules = taxis_trips_rules
-    def transform(self, data: dict[str, pd.DataFrame]) -> tuple[pd.DataFrame, dict[str, dict[str, Any]]]:
+    def transform(self, data: dict[str, pd.DataFrame]) -> tuple[pd.DataFrame, dict[str, dict]]:
         extracted_data = {}
         if not data: 
             logger.error("Erro, nenhum parquet referente a taxis_trips_nyc! ")
@@ -18,14 +18,15 @@ class TaxisTripsTransformer(TransformingInterface):
         if not self.rules: 
             logger.error('Erro, nenhuma regra de transformação de taxis_trips_nyc! ')
             raise TaxisTripsErrors('Erro, nenhuma regra de transformação de taxis_trips_nyc! ')
-        
-        logger.info("Iniciando o fluxo de transformação do parquet taxis_trips! ")
-        df, errors = self.concatenate_dfs(data, self.rules)
-        extracted_data['yellow_taxis_trips'] = df
-        return extracted_data, errors 
-    def concatenate_dfs(
-        self, data: dict[str, pd.DataFrame], rules: dict[str, Any]
-    ) -> tuple[pd.DataFrame, dict[str, dict[str, Any]]]:
+        try :
+            logger.info("Iniciando o fluxo de transformação do parquet taxis_trips! ")
+            df, errors = self.concatenate_dfs(data, self.rules)
+            extracted_data['yellow_taxis_trips'] = df
+            return extracted_data, errors 
+        except TaxisTripsErrors as e: 
+            logger.warning(f'Erro crítico {str(e)} impossibilitou a transformação do parquet taxis_trips_nyc! ')
+            raise TaxisTripsErrors(f"Erro crítico {str(e)} impossibilitou a transformação do parquet taxis_trips_nyc! ")
+    def concatenate_dfs(self, data: dict[str, pd.DataFrame], rules: dict[str, Any]) -> tuple[pd.DataFrame, dict[str,dict]]:
         errors = {}
         valid_dfs = []
         logger.info("Inciando o fluxo de concatenação de DFs referentes a taxis_trips_nyc...")

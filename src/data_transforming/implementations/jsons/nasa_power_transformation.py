@@ -30,7 +30,7 @@ class NasaPowerTransformation(TransformingInterface):
             
 
         
-    def structure_json(self, data:dict, rules:dict[str,Any]) -> tuple[pd.DataFrame, dict[str,dict]] : 
+    def structure_json(self, data:dict, rules:dict[str,Any]) -> pd.DataFrame : 
         logger.info('Estruturando o JSON NasaPower...')
         
         try :
@@ -42,7 +42,7 @@ class NasaPowerTransformation(TransformingInterface):
             df = df.reset_index()
             return df 
         except (KeyError,IndexError, ValueError, TypeError) as e: 
-            logger.warning(f"Erro: {str(e)}! ")
+            logger.warning(f"Erro: {str(e)}! impossibilitou a estrutuação de NasaPower! ")
             raise NasaPowerErrors(f'O erro {str(e)} impossibilitou a estrutuação de NasaPower! ')
             
         
