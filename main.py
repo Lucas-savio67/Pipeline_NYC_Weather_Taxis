@@ -6,7 +6,7 @@ from src.data_transforming.data_transforming import DataTransforming
 import boto3
 from config.aws_credencials import load_aws_credencials, CredencialsErrors
 logger = logging.getLogger(__name__)
-from config.settings import reading_settings, ingestion_settings, extraction_settings, specific_transforming_settings
+from config.settings import reading_settings, ingestion_settings, extraction_settings, specific_transforming_settings, generic_transformations_settings
 def main():
     try :
         credencials = load_aws_credencials()
@@ -38,18 +38,26 @@ def main():
             extract = extraction.extract_general_data(implementations[1], 'bronze')
             extracted_data[nome] = extract
         settings = specific_transforming_settings()
+        transformed_data = {}
         for tipo, info in extracted_data.items(): 
             if tipo == "JSON": 
                 jsons = settings.get('JSON')
                 for nome, implementation in jsons.items(): 
                     transforming = DataTransforming(implementation)
                     transform = transforming.transform_general_data(info[nome], nome)
+                    transformed_data= transform
             else: 
                 parquets = settings.get('parquets')
                 for nome, implementation in parquets.items(): 
                     transforming = DataTransforming(implementation)
                     transform = transforming.transform_general_data(info, nome)                
-                
+                    transformed_data = transform 
+        print(transformed_data)
+        transformed_data_2 = {}
+        settings = generic_transformations_settings()
+        transforming = DataTransforming(settings)
+        transform = transforming.transform_general_data(transformed_data, 'generic')
+        print(transform)
                 
         return 'Fluxo finalizado com sucesso! '
     except CredencialsErrors as e: 

@@ -5,8 +5,11 @@ from src.data_extraction.implementations.parquet_extractor import ParquetExtract
 from src.data_extraction.implementations.json_extractor import JsonExtractor
 from src.data_transforming.implementations.jsons.nasa_power_transformation import NasaPowerTransformation 
 from src.data_transforming.implementations.parquets.taxis_trips_nyc_transformer import TaxisTripsTransformer
-from config.transformations_rules.nasa_power_rules import nasa_power_rules 
-from config.transformations_rules.taxis_trips_rules import taxis_trips_rules
+from src.data_transforming.generic_implementation.generic_implementations import GenericTransforming
+from config.transformations_rules.specific_rules.nasa_power_rules import nasa_power_rules 
+from config.transformations_rules.specific_rules.taxis_trips_rules import taxis_trips_rules
+from config.transformations_rules.generic_rules.generic_rules import generic_rules
+
 from utils.schema_validator import validate_schema
 from pathlib import Path
 import boto3
@@ -43,3 +46,6 @@ def specific_transforming_settings():
         'parquets' :{'yellow_taxis_trips':  TaxisTripsTransformer(validate_schema, taxis_trips_rules)}
     }
     return implementations
+def generic_transformations_settings(): 
+    implementation = GenericTransforming(generic_rules)
+    return implementation
