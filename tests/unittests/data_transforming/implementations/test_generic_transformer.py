@@ -20,3 +20,31 @@ def test_null_filling():
     pd.testing.assert_frame_equal(transformed_data, expected_df)
     assert errors == {}
     assert info == {'qtd_nulos': {'nulos_antes': 1, 'depois': 0}}
+
+
+def test_column_renaming():
+    fake_data = pd.DataFrame({
+        'campo_1': [1, 2, 3],
+        'campo_2': [4, 5, 6]
+    })
+    fake_rules = {
+        'columns_to_rename': {'campo_1': 'nome_novo'}
+    }
+    expected_df = pd.DataFrame({
+        'nome_novo': [1, 2, 3],
+        'campo_2': [4, 5, 6]
+    })
+
+    transforming = GenericTransforming({})
+    transformed_data, info, errors = transforming.rename_columns(
+        fake_data, 'yellow_taxis_trips', fake_rules
+    )
+
+    pd.testing.assert_frame_equal(transformed_data, expected_df)
+    assert errors == {}
+    assert info == {
+        'renomeação_colunas': {
+            'antes': ['campo_1', 'campo_2'],
+            'depois': ['nome_novo', 'campo_2']
+        }
+    }
