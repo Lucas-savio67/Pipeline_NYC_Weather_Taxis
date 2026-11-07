@@ -14,6 +14,11 @@ class GenericTransforming(TransformingInterface[dict[str, pd.DataFrame]]):
         fill_null_columns = self.rules.get('fill_null_columns', [])
         null_info = {}
         null_errors = {}
+        if not fill_null_columns: 
+            null_info['qtd_nulos'] = df.isna().sum().sum()
+            logger.warning(f"Preenchimento de nulos não existe para {nome}, pulando...")
+            return df, null_info, null_errors
+        logger.info(f"Iniciando o fluxo de preenchimento de nulos de {df}! ")
         for column, value in fill_null_columns.items(): 
             try: 
                 df[column] = df[column].fillna(value) 
@@ -24,4 +29,23 @@ class GenericTransforming(TransformingInterface[dict[str, pd.DataFrame]]):
         logger.info(f"O DF {nome} teve seus valores nulos preenchidos com sucesso! ")
         null_info['qtd_nulos'] = df.isna().sum().sum()
         return df, null_info, null_errors 
-    
+    def rename_columns(self,df :pd.DataFrame, nome:str) -> tuple[pd.DataFrame, dict[str,Any], dict[str,dict]]: 
+        columns_to_rename = self.rules.get('columns_to_rename', {}) 
+        rename_columns_info = {}
+        rename_columns_errors = {}
+        if not columns_to_rename: 
+            logger.warning(f"Renomeação de colunas não existe para {nome}, pulando...")
+            rename_columns_info['renomeação_colunas'] = {'nomes': df.columns.to_list()}
+            return df, rename_columns_info, rename_columns_errors
+        logger.info(f"Iniciando o fluxo de renoemação de colunas de {df}! ")
+        antes = df.columns.to_list()
+        for nome_antigo, nome_novo in columns_to_rename.items(): 
+            if nome_antigo not in antes: 
+                logger.warning(f"Erro, a coluna {nome_antigo} não existe em {nome}! ")
+                rename_columns_errors[nome_antigo] = {'error': nome_antigo}
+            else: 
+                df = df.rename(columns={nome_antigo:nome_novo}, errors='raise')
+        logger.info(f'Finalizando o fluxo de renoemação de colunas de {nome}! ')
+        rename_columns_info['renomeação_colunas'] = {'antes': antes, 'depois': df.columns.to_list()}
+        return df, rename_columns_info, rename_columns_errors
+        
