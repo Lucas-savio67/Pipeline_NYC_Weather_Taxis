@@ -42,15 +42,41 @@ class GenericTransforming(TransformingInterface[dict[str, pd.DataFrame]]):
             logger.warning(f"Renomeação de colunas não existe para {nome}, pulando...")
             rename_columns_info['renomeação_colunas'] = {'nomes': df.columns.to_list()}
             return df, rename_columns_info, rename_columns_errors
-        logger.info(f"Iniciando o fluxo de renoemação de colunas de {df}! ")
+        logger.info(f"Iniciando o fluxo de renomemação de colunas de {df}! ")
         antes = df.columns.to_list()
         for nome_antigo, nome_novo in columns_to_rename.items(): 
             if nome_antigo not in antes: 
                 logger.warning(f"Erro, a coluna {nome_antigo} não existe em {nome}! ")
-                rename_columns_errors[nome_antigo] = {'error': nome_antigo}
+                rename_columns_errors['error'] = {'wrong_name': nome_antigo}
             else: 
                 df = df.rename(columns={nome_antigo:nome_novo}, errors='raise')
+                logger.info(f'A coluna {nome_antigo} foi renomeada com sucesso! ')
         logger.info(f'Finalizando o fluxo de renoemação de colunas de {nome}! ')
         rename_columns_info['renomeação_colunas'] = {'antes': antes, 'depois': df.columns.to_list()}
         return df, rename_columns_info, rename_columns_errors
-    
+    def remove_duplicates(self,df :pd.DataFrame, nome:str ) -> tuple[pd.DataFrame, dict[str,Any], dict[str,dict]]: 
+        drop_duplicates = self.rules.get('drop_duplicates', {}) 
+        duplicates_info = {}
+        duplicates_errors = {}
+        if not drop_duplicates: 
+            logger.warning(f"Exclusão de duplicatas não existe para {nome}, pulando...")
+            duplicates_info['qtd_duplicatas'] = {'duplicatas': df.duplicated().sum()}
+            return df, duplicates_info, duplicates_errors 
+        antes = df.duplicated().sum()
+        logger.info(f"Iniciando o fluxo de remoção de duplicatas de {nome}! ")
+        try :
+            for subset in drop_duplicates.values(): 
+                
+                if not subset:
+                
+                    df = df.drop_duplicates() 
+                    logger.info(f"Removendo duplicatas de {nome} sem subset! ")
+                else: 
+                    df = df.drop_duplicates(subset=subset)
+                    logger.info(f"Removendo duplicatas de {nome} com subset! ")
+        except KeyError as e: 
+            logger.warning(f"Erro, alguma coluna do subset não existe, veirifique: {str(e)}! ")
+            duplicates_errors['error'] = {'wrong_column': str(e)}
+        duplicates_info['qtd_duplicatas'] = {'antes': antes, 'depois': df.duplicated().sum()}
+        logger.info("Finalizando o fluxo de remoção de duplicatas! ")
+        return df, duplicates_info, duplicates_errors
