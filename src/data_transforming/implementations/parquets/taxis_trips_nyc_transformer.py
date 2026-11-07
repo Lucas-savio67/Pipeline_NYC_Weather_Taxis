@@ -20,19 +20,19 @@ class TaxisTripsTransformer(TransformingInterface):
             raise TaxisTripsErrors('Erro, nenhuma regra de transformação de taxis_trips_nyc! ')
         try :
             logger.info("Iniciando o fluxo de transformação do parquet taxis_trips! ")
-            df, errors = self.concatenate_dfs(data, self.rules)
+            df, errors = self.concatenate_dfs(data)
             extracted_data['yellow_taxis_trips'] = df
             return extracted_data, errors 
         except TaxisTripsErrors as e: 
             logger.warning(f'Erro crítico {str(e)} impossibilitou a transformação do parquet taxis_trips_nyc! ')
             raise TaxisTripsErrors(f"Erro crítico {str(e)} impossibilitou a transformação do parquet taxis_trips_nyc! ")
-    def concatenate_dfs(self, data: dict[str, pd.DataFrame], rules: dict[str, Any]) -> tuple[pd.DataFrame, dict[str,dict]]:
+    def concatenate_dfs(self, data: dict[str, pd.DataFrame]) -> tuple[pd.DataFrame, dict[str,dict]]:
         errors = {}
         valid_dfs = []
         logger.info("Inciando o fluxo de concatenação de DFs referentes a taxis_trips_nyc...")
         
         for nome, df in data.items(): 
-                valid, difference = self.schema_validator(df, rules)
+                valid, difference = self.schema_validator(df, self.rules)
                 if valid :
                     valid_dfs.append(df)
                 else: 

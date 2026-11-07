@@ -15,7 +15,7 @@ def test_success_taxis_trips_concatenation():
 
     transforming = TaxisTripsTransformer(validate_schema, fake_rules)
     transformed_data, errors = transforming.concatenate_dfs(
-        {"january": first_df, "february": second_df}, fake_rules
+        {"january": first_df, "february": second_df}
     )
 
     expected_df = pd.DataFrame({"VendorID": pd.Series([1, 2, 3], dtype="int32")})

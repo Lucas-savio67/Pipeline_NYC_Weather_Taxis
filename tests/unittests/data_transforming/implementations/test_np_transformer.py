@@ -24,7 +24,7 @@ def test_success_np_structuring():
     }
     
     transforming = NasaPowerTransformation(fake_rules)
-    transform = transforming.structure_json(fake_data, fake_rules)
+    transform = transforming.structure_json(fake_data)
     pd.testing.assert_frame_equal(transform, pd.DataFrame(expected_df))
 def test_success_np_datetime_column(): 
     fake_df = pd.DataFrame({ 
@@ -38,7 +38,7 @@ def test_success_np_datetime_column():
             
         }
     transforming = NasaPowerTransformation(fake_rules)
-    transformed_data, errors = transforming.create_datetime_column(fake_df,fake_rules)
+    transformed_data, errors = transforming.create_datetime_column(fake_df)
     assert transformed_data['data_hora'].dtype == '<M8[us]'
     assert errors == {}
 def test_success_np_transforming_end_to_end(): 
@@ -60,7 +60,7 @@ def test_success_np_transforming_end_to_end():
                 
     }
     transforming = NasaPowerTransformation(fake_rules)
-    transformed_data, errors = transforming.transform(fake_data,)
+    transformed_data, errors = transforming.transform(fake_data)
 
     expected_df = pd.DataFrame({
         'data_index': [0, 1, 2],
@@ -93,7 +93,7 @@ def test_key_error():
     }
     transforming = NasaPowerTransformation(fake_rules)
     with pytest.raises(NasaPowerErrors):
-        transforming.structure_json(fake_data, fake_rules)
+        transforming.structure_json(fake_data)
 def test_no_critical_error_datetime_column(caplog): 
     fake_rules = { 
         'datetime_columns':{ 
@@ -106,7 +106,7 @@ def test_no_critical_error_datetime_column(caplog):
     })
     transforming = NasaPowerTransformation(fake_rules)
     with caplog.at_level(logging.WARNING):
-        transformed_data, errors = transforming.create_datetime_column(fake_data, fake_rules)
+        transformed_data, errors = transforming.create_datetime_column(fake_data)
     
     assert errors == {'fake_column': {'error': "'fake_column'"}}
     pd.testing.assert_frame_equal(transformed_data, pd.DataFrame(fake_data))

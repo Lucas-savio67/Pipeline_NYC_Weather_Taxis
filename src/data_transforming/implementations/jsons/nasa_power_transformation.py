@@ -17,8 +17,8 @@ class NasaPowerTransformation(TransformingInterface):
             transformed_data = {}
             logger.info("Iniciando o fluxo de transformação do JSON NasaPower! ")
             
-            df = self.structure_json(data, self.rules)
-            df, errors = self.create_datetime_column(df, self.rules)
+            df = self.structure_json(data)
+            df, errors = self.create_datetime_column(df)
             transformed_data['NasaPower'] = df 
             logger.info("Fluxo de transformação do JSON NasaPower finalizado! ")
 
@@ -30,11 +30,11 @@ class NasaPowerTransformation(TransformingInterface):
             
 
         
-    def structure_json(self, data:dict, rules:dict[str,Any]) -> pd.DataFrame : 
+    def structure_json(self, data:dict) -> pd.DataFrame : 
         logger.info('Estruturando o JSON NasaPower...')
         
         try :
-            important_columns = rules.get('important_columns', [])
+            important_columns = self.rules.get('important_columns', [])
             if not important_columns: 
                 raise NasaPowerErrors("Erro, parece que as colunas importantes para estruturação não foram passadas! ")
             df = pd.DataFrame(data[important_columns[0]][important_columns[1]])
@@ -47,9 +47,9 @@ class NasaPowerTransformation(TransformingInterface):
             
         
         
-    def create_datetime_column(self, df:pd.DataFrame, rules:dict[str,Any]) -> tuple[pd.DataFrame, dict[str,dict]]: 
+    def create_datetime_column(self, df:pd.DataFrame) -> tuple[pd.DataFrame, dict[str,dict]]: 
         errors = {}  
-        coluna_datas = rules.get('datetime_columns', {})
+        coluna_datas = self.rules.get('datetime_columns', {})
         logger.info("Tratando colunas de data de NasaPower! ")
         if not coluna_datas: 
             logger.warning("Erro, as colunas de data não foram passadas, verifique as regras de NasaPower! ")
