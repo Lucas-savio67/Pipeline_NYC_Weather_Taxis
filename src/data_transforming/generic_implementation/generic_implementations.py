@@ -51,7 +51,7 @@ class GenericTransforming(TransformingInterface[dict[str, pd.DataFrame]]):
                 logger.warning(f'Erro, o valor {value} é incompatível com a coluna {column}: {str(e)}!  ')
                 null_errors['error'] = {'value_type': type(value)}
         logger.info(f'Finalizando o fluxo de preenchimento de nulos de {nome}! ')
-        null_info['qtd_nulos'] = {'nulos_antes': antes, 'depois': df.isna().sum()}
+        null_info['qtd_nulos'] = {'nulos_antes': antes, 'depois': df.isna().sum().sum()}
         return df, null_info, null_errors 
     def rename_columns(self,df :pd.DataFrame, nome:str, rules:Any) -> tuple[pd.DataFrame, dict[str,Any], dict[str,dict]]: 
         columns_to_rename = rules.get('columns_to_rename', {}) 
@@ -61,7 +61,7 @@ class GenericTransforming(TransformingInterface[dict[str, pd.DataFrame]]):
             logger.warning(f"Renomeação de colunas não existe para {nome}, pulando...")
             rename_columns_info['renomeação_colunas'] = {'nomes': df.columns.to_list()}
             return df, rename_columns_info, rename_columns_errors
-        logger.info(f"Iniciando o fluxo de renomemação de colunas de {df}! ")
+        logger.info(f"Iniciando o fluxo de renomeação de colunas de {df}! ")
         antes = df.columns.to_list()
         for nome_antigo, nome_novo in columns_to_rename.items(): 
             if nome_antigo not in antes: 
@@ -70,7 +70,7 @@ class GenericTransforming(TransformingInterface[dict[str, pd.DataFrame]]):
             else: 
                 df = df.rename(columns={nome_antigo:nome_novo}, errors='raise')
                 logger.info(f'A coluna {nome_antigo} foi renomeada com sucesso! ')
-        logger.info(f'Finalizando o fluxo de renoemação de colunas de {nome}! ')
+        logger.info(f'Finalizando o fluxo de renomeação de colunas de {nome}! ')
         rename_columns_info['renomeação_colunas'] = {'antes': antes, 'depois': df.columns.to_list()}
         return df, rename_columns_info, rename_columns_errors
     def remove_duplicates(self,df :pd.DataFrame, nome:str, rules) -> tuple[pd.DataFrame, dict[str,Any], dict[str,dict]]: 

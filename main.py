@@ -52,8 +52,6 @@ def main():
                     transforming = DataTransforming(implementation)
                     transform = transforming.transform_general_data(info, nome)                
                     transformed_data = transform 
-        print(transformed_data)
-        transformed_data_2 = {}
         settings = generic_transformations_settings()
         transforming = DataTransforming(settings)
         transform = transforming.transform_general_data(transformed_data, 'generic')
