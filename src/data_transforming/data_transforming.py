@@ -4,7 +4,7 @@ import logging
 import pandas as pd
 logger = logging.getLogger(__name__)
 class DataTransforming: 
-    def __init__(self, interface:TransformingInterface) -> None: 
+    def __init__(self, interface:TransformingInterface[Any]) -> None: 
         self.interface = interface 
     def transform_general_data(self, data:Any, nome:str) -> Any:
         try :

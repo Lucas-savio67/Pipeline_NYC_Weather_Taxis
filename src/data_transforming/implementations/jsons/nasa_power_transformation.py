@@ -5,10 +5,10 @@ logger = logging.getLogger(__name__)
 import pandas as pd
 class NasaPowerErrors(Exception): 
     pass
-class NasaPowerTransformation(TransformingInterface): 
+class NasaPowerTransformation(TransformingInterface[dict]): 
     def __init__(self, nasa_power_rules:dict[str,Any]) -> None: 
         self.rules = nasa_power_rules 
-    def transform(self, data:Any) -> tuple[dict[str,pd.DataFrame], dict[str,dict]]:
+    def transform(self, data:dict) -> tuple[dict[str,pd.DataFrame], dict[str,dict]]:
         critical_error = {}
         normal_errors = {}
         if not data or data is None: 

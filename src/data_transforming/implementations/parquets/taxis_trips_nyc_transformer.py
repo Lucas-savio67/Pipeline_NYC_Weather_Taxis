@@ -6,7 +6,7 @@ import logging
 logger = logging.getLogger(__name__)
 class TaxisTripsErrors(Exception): 
     pass 
-class TaxisTripsTransformer(TransformingInterface): 
+class TaxisTripsTransformer(TransformingInterface[dict[str,pd.DataFrame]]): 
     def __init__(self, schema_validator:validate_schema, taxis_trips_rules:dict[str,Any]) -> None: 
         self.schema_validator = schema_validator
         self.rules = taxis_trips_rules

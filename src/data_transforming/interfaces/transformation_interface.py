@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 import pandas as pd 
-from typing import Any 
-class TransformingInterface(ABC): 
+from typing import Generic, TypeVar 
+T = TypeVar('T')
+
+class TransformingInterface(ABC, Generic[T]): 
     @abstractmethod 
-    def transform(self, data:Any) -> tuple[dict[str,pd.DataFrame] , dict[str,dict]] : 
+    def transform(self, data:T) -> tuple[dict[str,pd.DataFrame] , dict[str,dict]] : 
         pass 
