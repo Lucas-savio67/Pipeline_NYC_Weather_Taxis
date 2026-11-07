@@ -48,3 +48,26 @@ def test_column_renaming():
             'depois': ['nome_novo', 'campo_2']
         }
     }
+
+
+def test_duplicate_removal():
+    fake_data = pd.DataFrame({
+        'campo_1': [1, 2, 2],
+        'campo_2': [4, 5, 5]
+    })
+    fake_rules = {
+        'drop_duplicates': {'all_columns': []}
+    }
+    expected_df = pd.DataFrame({
+        'campo_1': [1, 2],
+        'campo_2': [4, 5]
+    })
+
+    transforming = GenericTransforming({})
+    transformed_data, info, errors = transforming.remove_duplicates(
+        fake_data, 'yellow_taxis_trips', fake_rules
+    )
+
+    pd.testing.assert_frame_equal(transformed_data, expected_df)
+    assert errors == {}
+    assert info == {'qtd_duplicatas': {'antes': 1, 'depois': 0}}
