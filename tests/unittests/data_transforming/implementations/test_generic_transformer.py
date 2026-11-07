@@ -71,3 +71,46 @@ def test_duplicate_removal():
     pd.testing.assert_frame_equal(transformed_data, expected_df)
     assert errors == {}
     assert info == {'qtd_duplicatas': {'antes': 1, 'depois': 0}}
+
+
+def test_generic_transforming_end_to_end():
+    fake_data = {
+        'yellow_taxis_trips': pd.DataFrame({
+            'campo_1': [1, pd.NA, 2, 2],
+            'campo_2': [4, 5, 6, 6]
+        })
+    }
+    fake_rules = {
+        'yellow_taxis_trips': {
+            'drop_duplicates': {'all_columns': []},
+            'fill_null_columns': {'campo_1': 0},
+            'columns_to_rename': {'campo_1': 'nome_novo'}
+        }
+    }
+    expected_df = pd.DataFrame({
+        'nome_novo': pd.Series([1, 0, 2], dtype=object),
+        'campo_2': [4, 5, 6]
+    })
+
+    transforming = GenericTransforming(fake_rules)
+    transformed_data = transforming.transform(fake_data)
+
+    result = transformed_data['yellow_taxis_trips']
+    pd.testing.assert_frame_equal(result['data'], expected_df)
+    assert result['errors'] == {
+        'yellow_taxis_trips': {'errors': [{}, {}, {}]}
+    }
+    assert result['info'] == {
+        'yellow_taxis_trips': {
+            'info': [
+                {'qtd_duplicatas': {'antes': 1, 'depois': 0}},
+                {'qtd_nulos': {'nulos_antes': 1, 'depois': 0}},
+                {
+                    'renomeação_colunas': {
+                        'antes': ['campo_1', 'campo_2'],
+                        'depois': ['nome_novo', 'campo_2']
+                    }
+                }
+            ]
+        }
+    }
