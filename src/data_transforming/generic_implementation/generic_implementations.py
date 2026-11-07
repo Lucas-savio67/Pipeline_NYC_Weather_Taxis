@@ -15,19 +15,24 @@ class GenericTransforming(TransformingInterface[dict[str, pd.DataFrame]]):
         null_info = {}
         null_errors = {}
         if not fill_null_columns: 
-            null_info['qtd_nulos'] = df.isna().sum().sum()
+            null_info['qtd_nulos'] = {'nulos': df.isna().sum().sum()}
             logger.warning(f"Preenchimento de nulos não existe para {nome}, pulando...")
             return df, null_info, null_errors
         logger.info(f"Iniciando o fluxo de preenchimento de nulos de {df}! ")
+        antes = df.isna().sum().sum()
         for column, value in fill_null_columns.items(): 
             try: 
                 df[column] = df[column].fillna(value) 
-                logger.info(f'A coluna {column} teve seus valores nulos preenchidos! ')
+                nulos_coluna = df[column].isna().sum()
+                logger.info(f'A coluna {column} teve seus valores nulos preenchidos, {nulos_coluna} valores nulos! ')
             except KeyError as e: 
                 logger.warning(f"Erro, a coluna {column} não está no DF! ") 
-                null_errors[column] = {'error': str(e)}
-        logger.info(f"O DF {nome} teve seus valores nulos preenchidos com sucesso! ")
-        null_info['qtd_nulos'] = df.isna().sum().sum()
+                null_errors['error'] = {'column_name': str(e)}
+            except TypeError as e: 
+                logger.warning(f'Erro, o valor {value} é incompatível com a coluna {column}: {str(e)}!  ')
+                null_errors['error'] = {'value_type': type(value)}
+        logger.info(f'Finalizando o fluxo de preenchimento de nulos de {nome}! ')
+        null_info['qtd_nulos'] = {'nulos_antes': antes, 'depois': df.isna().sum()}
         return df, null_info, null_errors 
     def rename_columns(self,df :pd.DataFrame, nome:str) -> tuple[pd.DataFrame, dict[str,Any], dict[str,dict]]: 
         columns_to_rename = self.rules.get('columns_to_rename', {}) 
@@ -48,4 +53,4 @@ class GenericTransforming(TransformingInterface[dict[str, pd.DataFrame]]):
         logger.info(f'Finalizando o fluxo de renoemação de colunas de {nome}! ')
         rename_columns_info['renomeação_colunas'] = {'antes': antes, 'depois': df.columns.to_list()}
         return df, rename_columns_info, rename_columns_errors
-        
+    
