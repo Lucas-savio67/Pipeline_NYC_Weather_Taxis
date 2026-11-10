@@ -9,6 +9,8 @@ from config.stage_settings.reading_config.reading_settings import ReadingOrchest
 from config.stage_settings.reading_config.reading_data import return_read_data
 from config.stage_settings.ingestion_config.ingestion_data import return_ingestion_data 
 from config.stage_settings.ingestion_config.ingestion_settings import IngestionOrchestration
+from config.stage_settings.extraction_config.extraction_data import return_extraction_data 
+from config.stage_settings.extraction_config.extraction_settings import ExtractiongOrchestration
 
 logger = logging.getLogger(__name__)
 from config.settings import  extraction_settings, specific_transforming_settings, generic_transformations_settings
@@ -27,16 +29,13 @@ def main():
         ingestion = IngestionOrchestration(DataIngestion)
         ingestion_data_info = return_ingestion_data(s3_client, credencials['bucket_name'], 'bronze', read_data)
         ingest_data = ingestion.orchestrate_ingestion(ingestion_data_info)
-        print(ingest_data)
-        settings =   extraction_settings(s3_client, credencials['bucket_name'])
-        extracted_data = {}
-        for nome, implementations in settings.items(): 
-            extraction = DataExtraction(implementations[0])
-            extract = extraction.extract_general_data(implementations[1], 'bronze')
-            extracted_data[nome] = extract
+        extraction = ExtractiongOrchestration(DataExtraction)
+        extract_data_info = return_extraction_data(s3_client, credencials['bucket_name'], 'bronze')
+        extract = extraction.orchestrate_extraction(extract_data_info)
+        print(extract)
         settings = specific_transforming_settings()
         transformed_data = {}
-        for tipo, info in extracted_data.items(): 
+        for tipo, info in extract.items(): 
             if tipo == "JSON": 
                 jsons = settings.get('JSON')
                 for nome, implementation in jsons.items(): 
