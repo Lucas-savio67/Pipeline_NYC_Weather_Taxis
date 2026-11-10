@@ -27,7 +27,7 @@ def reading_settings() -> dict[str]:
     return implementations
 def ingestion_settings(client, bucket_name) -> dict[str]: 
     
-    parquets = discover_parquets({'yellow_taxis_trips': Path('yellow_taxis_trips_NYC')})
+    parquets = discover_parquets({'yellow_taxis_trips': Path('data/parquets/yellow_taxis_trips_NYC')})
     implementations = {
         'APIs': [APIS3Ingestion(client), bucket_name], 
         'Parquets': [ParquetIngestionS3(client), bucket_name, parquets]
