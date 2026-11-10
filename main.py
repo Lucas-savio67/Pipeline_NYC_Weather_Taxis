@@ -5,8 +5,10 @@ from src.data_extraction.data_extraction import DataExtraction
 from src.data_transforming.data_transforming import DataTransforming
 import boto3
 from config.aws_credencials import load_aws_credencials, CredencialsErrors
+from config.stage_settings.reading_config.reading_settings import ReadingOrchestration
+from config.stage_settings.reading_config.reading_data import return_read_data
 logger = logging.getLogger(__name__)
-from config.settings import reading_settings, ingestion_settings, extraction_settings, specific_transforming_settings, generic_transformations_settings
+from config.settings import ingestion_settings, extraction_settings, specific_transforming_settings, generic_transformations_settings
 def main():
     try :
         credencials = load_aws_credencials()
@@ -16,13 +18,9 @@ def main():
             aws_secret_access_key = credencials['aws_secret_access_key'] , 
             region_name = credencials['region_name']
             )
-        settings = reading_settings()
-        read_data = {}
-        for nome, implementations in settings.items(): 
-
-            reading = DataReading(implementations)
-            read = reading.read_general_data()
-            read_data[nome] = read 
+        reading = ReadingOrchestration(DataReading)
+        read_data_info = return_read_data()
+        read_data = reading.orchestrate_reading(read_data_info)
         settings = ingestion_settings(s3_client, credencials['bucket_name'])
         for nome, implementations in settings.items(): 
             ingestion = DataIngestion(implementations[0])
