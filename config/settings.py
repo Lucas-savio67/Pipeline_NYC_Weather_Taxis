@@ -3,7 +3,14 @@ from src.data_ingestion.implementations.api_s3_ingestion import APIS3Ingestion
 from src.data_ingestion.implementations.parquet_ingestion import ParquetIngestionS3
 from src.data_extraction.implementations.parquet_extractor import ParquetExtractor 
 from src.data_extraction.implementations.json_extractor import JsonExtractor
+from src.data_transforming.implementations.jsons.nasa_power_transformation import NasaPowerTransformation 
+from src.data_transforming.implementations.parquets.taxis_trips_nyc_transformer import TaxisTripsTransformer
+from src.data_transforming.generic_implementation.generic_implementations import GenericTransforming
+from config.transformations_rules.specific_rules.nasa_power_rules import nasa_power_rules 
+from config.transformations_rules.specific_rules.taxis_trips_rules import taxis_trips_rules
+from config.transformations_rules.generic_rules.generic_rules import generic_rules
 
+from utils.schema_validator import validate_schema
 from pathlib import Path
 import boto3
 from dotenv import load_dotenv
@@ -29,7 +36,16 @@ def ingestion_settings(client, bucket_name) -> dict[str]:
 def extraction_settings(client, bucket_name) -> dict[str]: 
     
     implementations = { 
-        'APIs': [JsonExtractor(client) , bucket_name],
+        'JSON': [JsonExtractor(client) , bucket_name],
         'Parquets': [ParquetExtractor(client), bucket_name]
     }
     return implementations
+def specific_transforming_settings(): 
+    implementations = { 
+        'JSON' :{'bronze/JSONs/NasaPower/NasaPower.json': NasaPowerTransformation(nasa_power_rules)} , 
+        'parquets' :{'yellow_taxis_trips':  TaxisTripsTransformer(validate_schema, taxis_trips_rules)}
+    }
+    return implementations
+def generic_transformations_settings(): 
+    implementation = GenericTransforming(generic_rules)
+    return implementation
