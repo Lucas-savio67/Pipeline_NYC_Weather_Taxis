@@ -7,8 +7,11 @@ import boto3
 from config.aws_credencials import load_aws_credencials, CredencialsErrors
 from config.stage_settings.reading_config.reading_settings import ReadingOrchestration
 from config.stage_settings.reading_config.reading_data import return_read_data
+from config.stage_settings.ingestion_config.ingestion_data import return_ingestion_data 
+from config.stage_settings.ingestion_config.ingestion_settings import IngestionOrchestration
+
 logger = logging.getLogger(__name__)
-from config.settings import ingestion_settings, extraction_settings, specific_transforming_settings, generic_transformations_settings
+from config.settings import  extraction_settings, specific_transforming_settings, generic_transformations_settings
 def main():
     try :
         credencials = load_aws_credencials()
@@ -21,14 +24,10 @@ def main():
         reading = ReadingOrchestration(DataReading)
         read_data_info = return_read_data()
         read_data = reading.orchestrate_reading(read_data_info)
-        settings = ingestion_settings(s3_client, credencials['bucket_name'])
-        for nome, implementations in settings.items(): 
-            ingestion = DataIngestion(implementations[0])
-            if nome == 'Parquets': 
-                ingest = ingestion.ingest_general_data('bronze', implementations[2], implementations[1] )
-            else: 
-
-                ingest = ingestion.ingest_general_data('bronze', read_data[nome], implementations[1])
+        ingestion = IngestionOrchestration(DataIngestion)
+        ingestion_data_info = return_ingestion_data(s3_client, credencials['bucket_name'], 'bronze', read_data)
+        ingest_data = ingestion.orchestrate_ingestion(ingestion_data_info)
+        print(ingest_data)
         settings =   extraction_settings(s3_client, credencials['bucket_name'])
         extracted_data = {}
         for nome, implementations in settings.items(): 
