@@ -26,6 +26,19 @@ def test_success_np_structuring():
     transforming = NasaPowerTransformation(fake_rules)
     transform = transforming.structure_json(fake_data)
     pd.testing.assert_frame_equal(transform, pd.DataFrame(expected_df))
+def test_no_rule(): 
+    fake_data = { 
+            'data': {
+                'data_2': { 
+                    'data_3': [1,2,3]  ,
+                    'data_4': [4,5,6]
+                }
+            }
+        }
+    transforming = NasaPowerTransformation({})
+    with pytest.raises(NasaPowerErrors): 
+        transforming.transform(fake_data)
+        
 def test_success_np_datetime_column(): 
     fake_df = pd.DataFrame({ 
         'data_hora': ['2020010100', '2020010101', '2020010102']

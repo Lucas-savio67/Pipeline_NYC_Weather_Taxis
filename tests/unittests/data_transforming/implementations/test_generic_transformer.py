@@ -25,7 +25,18 @@ def test_null_filling():
     assert errors == {}
     assert info == {'qtd_nulos': {'nulos_antes': 1, 'depois': 0}}
 
-
+def test_no_generic_rule(): 
+    
+    transforming = GenericTransforming({})
+    with pytest.raises(GenericTransformingErrors): 
+        transforming.transform({
+            'fake_data': pd.DataFrame({'campo_1': [1, 2, 3]})
+        })
+def test_no_data(): 
+    transforming = GenericTransforming({'fake_rule': 'fake_rules'})
+    with pytest.raises(GenericTransformingErrors): 
+        transforming.transform({
+            })
 def test_column_renaming():
     fake_data = pd.DataFrame({
         'campo_1': [1, 2, 3],

@@ -15,6 +15,9 @@ class GenericTransforming(TransformingInterface[dict[str, pd.DataFrame]]):
         if not data: 
             logger.error("Erro, nenhum DF foi encontrado! ")
             raise GenericTransformingErrors('Erro, nenhum DF foi encontrado! ')
+        if not self.rules: 
+            logger.error("Erro, regras de transformaçõs genéricas não foram definidas! ")
+            raise GenericTransformingErrors('Erro, regras de transformaçõs genéricas não foram definidas! ')
         logger.info(f"Iniciando o fluxo de transformações genéricas! ")
         for nome , df in data.items(): 
             logger.info(f"Iniciando as transformações genéricas de {nome}! ")
