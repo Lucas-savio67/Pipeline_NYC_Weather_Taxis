@@ -5,8 +5,16 @@ from src.data_extraction.data_extraction import DataExtraction
 from src.data_transforming.data_transforming import DataTransforming
 import boto3
 from config.aws_credencials import load_aws_credencials, CredencialsErrors
+from config.stage_settings.reading_config.reading_settings import ReadingOrchestration
+from config.stage_settings.reading_config.reading_data import return_read_data
+from config.stage_settings.ingestion_config.ingestion_data import return_ingestion_data 
+from config.stage_settings.ingestion_config.ingestion_settings import IngestionOrchestration
+from config.stage_settings.extraction_config.extraction_data import return_extraction_data 
+from config.stage_settings.extraction_config.extraction_settings import ExtractiongOrchestration
+from config.stage_settings.transformation_config.transformation_settings import TransformingOrchestration 
+from config.stage_settings.transformation_config.transformation_data import return_specific_transforming_data, return_generic_transforming_data
+
 logger = logging.getLogger(__name__)
-from config.settings import reading_settings, ingestion_settings, extraction_settings, specific_transforming_settings, generic_transformations_settings
 def main():
     try :
         credencials = load_aws_credencials()
@@ -16,51 +24,24 @@ def main():
             aws_secret_access_key = credencials['aws_secret_access_key'] , 
             region_name = credencials['region_name']
             )
-        settings = reading_settings()
-        read_data = {}
-        for nome, implementations in settings.items(): 
-
-            reading = DataReading(implementations)
-            read = reading.read_general_data()
-            read_data[nome] = read 
-        settings = ingestion_settings(s3_client, credencials['bucket_name'])
-        for nome, implementations in settings.items(): 
-            ingestion = DataIngestion(implementations[0])
-            if nome == 'Parquets': 
-                ingest = ingestion.ingest_general_data('bronze', implementations[2], implementations[1] )
-            else: 
-
-                ingest = ingestion.ingest_general_data('bronze', read_data[nome], implementations[1])
-        settings =   extraction_settings(s3_client, credencials['bucket_name'])
-        extracted_data = {}
-        for nome, implementations in settings.items(): 
-            extraction = DataExtraction(implementations[0])
-            extract = extraction.extract_general_data(implementations[1], 'bronze')
-            extracted_data[nome] = extract
-        settings = specific_transforming_settings()
-        transformed_data = {}
-        for tipo, info in extracted_data.items(): 
-            if tipo == "JSON": 
-                jsons = settings.get('JSON')
-                for nome, implementation in jsons.items(): 
-                    transforming = DataTransforming(implementation)
-                    transform = transforming.transform_general_data(info[nome], nome)
-                    transformed_data= transform
-            else: 
-                parquets = settings.get('parquets')
-                for nome, implementation in parquets.items(): 
-                    transforming = DataTransforming(implementation)
-                    transform = transforming.transform_general_data(info, nome)                
-                    transformed_data = transform 
-        settings = generic_transformations_settings()
-        transforming = DataTransforming(settings)
-        transform = transforming.transform_general_data(transformed_data, 'generic')
-        print(transform)
-                
+        reading = ReadingOrchestration(DataReading)
+        read_data_info = return_read_data()
+        read_data = reading.orchestrate_reading(read_data_info)
+        ingestion = IngestionOrchestration(DataIngestion)
+        ingestion_data_info = return_ingestion_data(s3_client, credencials['bucket_name'], 'bronze', read_data)
+        #ingest_data = ingestion.orchestrate_ingestion(ingestion_data_info)
+        extraction = ExtractiongOrchestration(DataExtraction)
+        extract_data_info = return_extraction_data(s3_client, credencials['bucket_name'], 'bronze')
+        extracted = extraction.orchestrate_extraction(extract_data_info)
+        transformation = TransformingOrchestration(DataTransforming)
+        transform_data_info = return_specific_transforming_data(extracted)
+        specific_transform = transformation.orchestrate_transforming(transform_data_info)
+        generic_transform_data_info = return_generic_transforming_data(specific_transform)
+        generic_transform = transformation.orchestrate_transforming(generic_transform_data_info)
         return 'Fluxo finalizado com sucesso! '
     except CredencialsErrors as e: 
         logger.warning(f"Erro ao carregar credenciais AWS, impossível iniciar o fluxo: {str(e)}")
     except Exception as e: 
         logger.warning(f"Erro {str(e)} ao executar o Pipeline! ")
-    
-print(main())
+if __name__ == '__main__':
+    main()

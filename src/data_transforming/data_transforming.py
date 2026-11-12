@@ -11,7 +11,7 @@ class DataTransforming:
             transformed_data, errors = self.interface.transform(data)
             if errors: 
                 logger.warning(f"Erros de transformação de {nome}: {errors}! ")
-            logger.info(f"Dados transformados com sucesso: {transformed_data.keys()}")
+            logger.info(f"Dados transformados com sucesso: {nome}! ")
             return transformed_data
         except Exception as e: 
             logger.error(f"Erro crítico {e} impossibilitou {nome} de realizar transformações!  ")

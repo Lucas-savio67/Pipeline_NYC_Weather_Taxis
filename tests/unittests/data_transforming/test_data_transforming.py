@@ -35,9 +35,9 @@ def test_success_data_transforming(caplog):
     transforming = DataTransforming(json_transforming)
     with caplog.at_level(logging.INFO):
         transform = transforming.transform_general_data(fake_data, 'NasaPower')
-    success_transforming = {'NasaPower': 'data_example'}
-    pd.testing.assert_frame_equal(transform['NasaPower'], expected_df)
-    assert f'{success_transforming.keys()}' in caplog.text
+    
+    pd.testing.assert_frame_equal(transform, expected_df)
+    assert 'NasaPower' in caplog.text
 def test_critical_error(caplog): 
     fake_rules = {
         'fake_rule': 'fake'

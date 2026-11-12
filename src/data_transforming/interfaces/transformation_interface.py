@@ -5,5 +5,5 @@ T = TypeVar('T')
 
 class TransformingInterface(ABC, Generic[T]): 
     @abstractmethod 
-    def transform(self, data:T) -> tuple[dict[str,pd.DataFrame] , dict[str,dict]] : 
+    def transform(self, data:T) -> tuple[pd.DataFrame , dict[str,dict]] : 
         pass 

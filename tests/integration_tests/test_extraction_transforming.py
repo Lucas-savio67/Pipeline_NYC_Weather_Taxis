@@ -54,4 +54,4 @@ def test_success_extraction_transforming():
         "data_3": [1, 2],
         "data_4": [4, 5],
     })
-    pd.testing.assert_frame_equal(resultado["NasaPower"], esperado)
+    pd.testing.assert_frame_equal(resultado, esperado)

@@ -38,7 +38,7 @@ def test_success_taxis_trips_transforming():
 
     expected_df = pd.DataFrame({"VendorID": pd.Series([1, 2, 3], dtype="int32")})
     pd.testing.assert_frame_equal(
-        transformed_data["yellow_taxis_trips"], expected_df
+        transformed_data, expected_df
     )
     assert errors == {}
 

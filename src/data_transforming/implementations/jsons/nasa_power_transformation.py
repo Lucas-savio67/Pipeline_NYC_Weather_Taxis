@@ -8,21 +8,24 @@ class NasaPowerErrors(Exception):
 class NasaPowerTransformation(TransformingInterface[dict]): 
     def __init__(self, nasa_power_rules:dict[str,Any]) -> None: 
         self.rules = nasa_power_rules 
-    def transform(self, data:dict) -> tuple[dict[str,pd.DataFrame], dict[str,dict]]:
+    def transform(self, data:dict) -> tuple[pd.DataFrame, dict[str,dict]]:
         critical_error = {}
-        normal_errors = {}
         if not data or data is None: 
-            raise NasaPowerErrors(f"Erro, não há nenhuma dado referente a NasaPower! ")
+            logger.error('Erro, não há nenhuma dado referente a NasaPower! ')
+            raise NasaPowerErrors("Erro, não há nenhuma dado referente a NasaPower! ")
+        if not self.rules: 
+            
+            logger.error('Erro, nenhuma regra para NasaPower foi definida! ')
+            raise NasaPowerErrors('Erro, nenhuma regra para NasaPower foi definida! ')
         try :
-            transformed_data = {}
             logger.info("Iniciando o fluxo de transformação do JSON NasaPower! ")
             
             df = self.structure_json(data)
             df, errors = self.create_datetime_column(df)
-            transformed_data['NasaPower'] = df 
+            
             logger.info("Fluxo de transformação do JSON NasaPower finalizado! ")
 
-            return transformed_data, errors
+            return df, errors
         except NasaPowerErrors as e: 
             critical_error['NasaPower'] = {'error': str(e)}
             raise NasaPowerErrors(critical_error)
@@ -64,7 +67,7 @@ class NasaPowerTransformation(TransformingInterface[dict]):
             except ValueError as e: 
                 logger.warning(f"Erro, a coluna {nome} não é compatível com o formato fornecido! ")
                 errors[nome] = {'error': str(e)}
-        logger.info("Fluxo de tratameno de colunas datetime terminando! ")
+        logger.info("Fluxo de tratamento de colunas datetime terminando! ")
         return df, errors
         
 

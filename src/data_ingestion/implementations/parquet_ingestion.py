@@ -15,6 +15,7 @@ class ParquetIngestionS3(IngestionInterface):
             raise ParquetIngestionErrors('Erro, nenhum parquet existente! ')
         logger.info("Iniciando o fluxo de ingestão de Parquets no S3! ")
         for nome, files in data.items(): 
+            
             if not files: 
                 logger.warning(f"Erro, nenhuma parquet referente a {nome} existe! ")
                 errors[nome] = {'error': 'no_files'}
