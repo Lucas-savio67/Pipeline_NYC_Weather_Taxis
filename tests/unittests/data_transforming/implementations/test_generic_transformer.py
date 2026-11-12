@@ -108,14 +108,12 @@ def test_generic_transforming_end_to_end():
     })
 
     transforming = GenericTransforming(fake_rules)
-    transformed_data = transforming.transform(fake_data)
+    transformed_data, errors = transforming.transform(fake_data)
 
-    result = transformed_data['yellow_taxis_trips']
-    pd.testing.assert_frame_equal(result['data'], expected_df)
-    assert result['errors'] == {
-        'yellow_taxis_trips': {'errors': [{}, {}, {}]}
-    }
-    assert result['info'] == {
+    print(transformed_data['yellow_taxis_trips']['info'])
+    pd.testing.assert_frame_equal(transformed_data['yellow_taxis_trips']['data'], expected_df)
+    assert errors == {'yellow_taxis_trips': {'errors': [{}, {}, {}]}}
+    assert transformed_data['yellow_taxis_trips']['info'] == {
         'yellow_taxis_trips': {
             'info': [
                 {'qtd_duplicatas': {'antes': 1, 'depois': 0}},
@@ -239,15 +237,11 @@ def test_generic_transforming_collects_errors():
     }
 
     transforming = GenericTransforming(fake_rules)
-    transformed_data = transforming.transform(fake_data)
+    transformed_data, errors = transforming.transform(fake_data)
 
     result = transformed_data['yellow_taxis_trips']
     pd.testing.assert_frame_equal(result['data'], fake_data['yellow_taxis_trips'])
-    errors = result['errors']['yellow_taxis_trips']['errors']
-    assert 'coluna_inexistente' in errors[0]['error']['wrong_column']
-    assert errors[1] == {
-        'error': {'column_name': "'outra_coluna_inexistente'"}
-    }
-    assert errors[2] == {
-        'error': {'wrong_name': 'mais_uma_coluna_inexistente'}
-    }
+    assert errors == {'yellow_taxis_trips': {'errors': 
+                                    [{'error': {'wrong_column': "Index(['coluna_inexistente'], dtype='str')"}},         
+                                    {'error': {'column_name': "'outra_coluna_inexistente'"}}, {'error': {'wrong_name': 'mais_uma_coluna_inexistente'}}]}}
+    
