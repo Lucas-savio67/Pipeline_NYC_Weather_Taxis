@@ -11,9 +11,10 @@ from config.stage_settings.ingestion_config.ingestion_data import return_ingesti
 from config.stage_settings.ingestion_config.ingestion_settings import IngestionOrchestration
 from config.stage_settings.extraction_config.extraction_data import return_extraction_data 
 from config.stage_settings.extraction_config.extraction_settings import ExtractiongOrchestration
+from config.stage_settings.transformation_config.transformation_settings import TransformingOrchestration 
+from config.stage_settings.transformation_config.transformation_data import return_specific_transforming_data, return_generic_transforming_data
 
 logger = logging.getLogger(__name__)
-from config.settings import  extraction_settings, specific_transforming_settings, generic_transformations_settings
 def main():
     try :
         credencials = load_aws_credencials()
@@ -28,35 +29,19 @@ def main():
         read_data = reading.orchestrate_reading(read_data_info)
         ingestion = IngestionOrchestration(DataIngestion)
         ingestion_data_info = return_ingestion_data(s3_client, credencials['bucket_name'], 'bronze', read_data)
-        ingest_data = ingestion.orchestrate_ingestion(ingestion_data_info)
+        #ingest_data = ingestion.orchestrate_ingestion(ingestion_data_info)
         extraction = ExtractiongOrchestration(DataExtraction)
         extract_data_info = return_extraction_data(s3_client, credencials['bucket_name'], 'bronze')
-        extract = extraction.orchestrate_extraction(extract_data_info)
-        print(extract)
-        settings = specific_transforming_settings()
-        transformed_data = {}
-        for tipo, info in extract.items(): 
-            if tipo == "JSON": 
-                jsons = settings.get('JSON')
-                for nome, implementation in jsons.items(): 
-                    transforming = DataTransforming(implementation)
-                    transform = transforming.transform_general_data(info[nome], nome)
-                    transformed_data= transform
-            else: 
-                parquets = settings.get('parquets')
-                for nome, implementation in parquets.items(): 
-                    transforming = DataTransforming(implementation)
-                    transform = transforming.transform_general_data(info, nome)                
-                    transformed_data = transform 
-        settings = generic_transformations_settings()
-        transforming = DataTransforming(settings)
-        transform = transforming.transform_general_data(transformed_data, 'generic')
-        print(transform)
-                
+        extracted = extraction.orchestrate_extraction(extract_data_info)
+        transformation = TransformingOrchestration(DataTransforming)
+        transform_data_info = return_specific_transforming_data(extracted)
+        specific_transform = transformation.orchestrate_transforming(transform_data_info)
+        generic_transform_data_info = return_generic_transforming_data(specific_transform)
+        generic_transform = transformation.orchestrate_transforming(generic_transform_data_info)
         return 'Fluxo finalizado com sucesso! '
     except CredencialsErrors as e: 
         logger.warning(f"Erro ao carregar credenciais AWS, impossível iniciar o fluxo: {str(e)}")
     except Exception as e: 
         logger.warning(f"Erro {str(e)} ao executar o Pipeline! ")
-    
-print(main())
+if __name__ == '__main__':
+    main()
