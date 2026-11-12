@@ -18,7 +18,10 @@ class GenericTransforming(TransformingInterface[dict[str, pd.DataFrame]]):
         logger.info(f"Iniciando o fluxo de transformações genéricas! ")
         for nome , df in data.items(): 
             logger.info(f"Iniciando as transformações genéricas de {nome}! ")
-            df_rules = self.rules.get(nome)
+            df_rules = self.rules.get(nome, None)
+            if not df_rules: 
+                logger.warning(f"Erro, regras de transformações genéricas não foram passa para {nome}! ")
+                continue
             df,rp_info, rp_errors = self.remove_duplicates(df, nome, df_rules)
             df,fn_info, fn_errors = self.fill_null_values(df, nome, df_rules)
             df,rc_info,rc_errors = self.rename_columns(df, nome, df_rules)
