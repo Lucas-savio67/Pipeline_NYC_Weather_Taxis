@@ -23,18 +23,18 @@ class GenericTransforming(TransformingInterface[dict[str, pd.DataFrame]]):
             logger.info(f"Iniciando as transformações genéricas de {nome}! ")
             df_rules = self.rules.get(nome, None)
             if not df_rules: 
-                logger.warning(f"Erro, regras de transformações genéricas não foram passa para {nome}! ")
-                continue
-            df,rp_info, rp_errors = self.remove_duplicates(df, nome, df_rules)
-            df,fn_info, fn_errors = self.fill_null_values(df, nome, df_rules)
-            df,rc_info,rc_errors = self.rename_columns(df, nome, df_rules)
-            logger.info(f"Finalizando o fluxo de trtansformações genéricas de {nome}! ")
-            all_errors[nome] = {'errors': [rp_errors, fn_errors, rc_errors]}
-            logger.info(f"Erros de {nome}: {all_errors}")
-            all_info[nome] = {'info': [rp_info, fn_info, rc_info]}
-            logger.info(f"Informações de transformações referentes a {nome}: {all_info}! ")
-            transformed_data[nome] = {'data': df, 'errors': all_errors, 'info': all_info} 
-        return transformed_data
+                logger.warning(f"Erro, regras de transformações genéricas não foram passadas para {nome}! ")
+            else:
+                df,rp_info, rp_errors = self.remove_duplicates(df, nome, df_rules)
+                df,fn_info, fn_errors = self.fill_null_values(df, nome, df_rules)
+                df,rc_info,rc_errors = self.rename_columns(df, nome, df_rules)
+                logger.info(f"Finalizando o fluxo de trtansformações genéricas de {nome}! ")
+                all_errors[nome] = {'errors': [rp_errors, fn_errors, rc_errors]}
+                logger.info(f"Erros de {nome}: {all_errors}")
+                all_info[nome] = {'info': [rp_info, fn_info, rc_info]}
+                logger.info(f"Informações de transformações referentes a {nome}: {all_info}! ")
+                transformed_data[nome] = {'data': df, 'info': all_info} 
+        return transformed_data, all_errors
     def fill_null_values(self,df :pd.DataFrame, nome:str, rules:Any) -> tuple[pd.DataFrame, dict[str,Any], dict[str,dict]]: 
         fill_null_columns = rules.get('fill_null_columns', [])
         null_info = {}
@@ -67,7 +67,7 @@ class GenericTransforming(TransformingInterface[dict[str, pd.DataFrame]]):
             logger.warning(f"Renomeação de colunas não existe para {nome}, pulando...")
             rename_columns_info['renomeação_colunas'] = {'nomes': df.columns.to_list()}
             return df, rename_columns_info, rename_columns_errors
-        logger.info(f"Iniciando o fluxo de renomeação de colunas de {df}! ")
+        logger.info(f"Iniciando o fluxo de renomeação de colunas de {nome}! ")
         antes = df.columns.to_list()
         for nome_antigo, nome_novo in columns_to_rename.items(): 
             if nome_antigo not in antes: 
