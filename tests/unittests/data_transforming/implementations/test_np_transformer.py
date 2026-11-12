@@ -38,7 +38,7 @@ def test_no_rule():
     transforming = NasaPowerTransformation({})
     with pytest.raises(NasaPowerErrors): 
         transforming.transform(fake_data)
-        
+
 def test_success_np_datetime_column(): 
     fake_df = pd.DataFrame({ 
         'data_hora': ['2020010100', '2020010101', '2020010102']
@@ -86,7 +86,7 @@ def test_success_np_transforming_end_to_end():
     })
 
     
-    pd.testing.assert_frame_equal(transformed_data['NasaPower'], expected_df)
+    pd.testing.assert_frame_equal(transformed_data, expected_df)
     assert errors == {}
 def test_no_data(): 
     fake_rules = { 
