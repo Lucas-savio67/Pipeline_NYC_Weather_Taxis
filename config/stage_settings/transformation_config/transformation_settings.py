@@ -7,5 +7,5 @@ class TransformingOrchestration:
         transformed_data = {}
         for nome, model in implementations.items(): 
             transform = self.transforming(model.implementation).transform_general_data(model.data, model.nome) 
-            transformed_data.update(transform)
+            transformed_data[nome] = transform 
         return transformed_data

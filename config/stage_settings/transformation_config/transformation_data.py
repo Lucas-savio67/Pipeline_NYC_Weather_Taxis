@@ -13,10 +13,10 @@ def return_specific_transforming_data(extracted_data:dict[str,Any]) -> dict[str,
     parquet_data = extracted_data['Parquets']
     implementations = { 
         'yellow_taxis_trips': TransformationModel(TaxisTripsTransformer(validate_schema, taxis_trips_rules), parquet_data, 'yellow_taxis_trips'),
-        'bronze/JSONs/NasaPower/NasaPower.json': TransformationModel(NasaPowerTransformation(nasa_power_rules), json_data['bronze/JSONs/NasaPower/NasaPower.json'], 'NasaPower') , }
+        'NasaPower': TransformationModel(NasaPowerTransformation(nasa_power_rules), json_data['bronze/JSONs/NasaPower/NasaPower.json'], 'NasaPower') , }
     return implementations
 def return_generic_transforming_data(transformed_data:dict[str,pd.DataFrame]) -> dict[str,TransformationModel]: 
     implementations = { 
-        'bronze/JSONs/NasaPower/NasaPower.json': TransformationModel(GenericTransforming(generic_rules), transformed_data, 'generic')
+        'generic': TransformationModel(GenericTransforming(generic_rules), transformed_data, 'generic')
     }
     return implementations
