@@ -1,4 +1,5 @@
 from src.data_extraction.interfaces.extraction_interface import ExtractionInterface
+from config.return_contracts.extraction_contract import ExtractionInfo
 import logging 
 from mypy_boto3_s3 import S3Client
 from botocore.exceptions import ClientError 
@@ -11,9 +12,10 @@ class JSONExtractorErrors(Exception):
 class JsonExtractor(ExtractionInterface): 
     def __init__(self, s3_client:S3Client) -> None : 
         self.client = s3_client
-    def extract(self, bucket_name, layer) -> tuple[dict[str, Any], dict[str,dict]]:
+    def extract(self, bucket_name, layer) -> ExtractionInfo:
         extracted_json = {}
         errors = {}
+        extracted_data = {}
         logger.info("Iniciando a extração de arquivos JSON do S3... ")
         try :
             paginator = self.client.get_paginator('list_objects_v2')
@@ -21,12 +23,14 @@ class JsonExtractor(ExtractionInterface):
             for page in pages: 
                 if 'Contents' in page:
                     for objeto in page['Contents']:
+                        extracted = False
                         try :
                             caminho_s3 = objeto['Key']
                             response = self.client.get_object(Bucket=bucket_name ,Key= caminho_s3)
                             json_content = json.loads(response['Body'].read().decode('utf-8'))
                             extracted_json[caminho_s3] = json_content
                             logger.info(f"O JSON referente a {caminho_s3} foi extraído com sucesso! ")
+                            extracted= True
                         except json.JSONDecodeError as e : 
                             logger.warning(f"Erro decodificar o JSON {caminho_s3}, {str(e)}")
                             errors[caminho_s3] = {'error': str(e)}
@@ -39,11 +43,16 @@ class JsonExtractor(ExtractionInterface):
                         except ClientError as e : 
                             logger.warning(f'Erro ao obter o objeto {caminho_s3}: {str(e)} ')
                             errors[caminho_s3] = {'error': str(e)}
+                        extracted_data[caminho_s3] = extracted
                 else: 
                     logger.warning(f"Nenhum objeto foi encontrado na página: {page}! ")
                     errors['empty_page'] = {'error': 'No_object'}
+        
         except ClientError as e: 
             logger.warning(f"Erro ao listar os objetos: {str(e)}")
             raise JSONExtractorErrors(f"Erro ao listar os objetos: {str(e)}")
         logger.info("Finalizando o fluxo de extração de JSONs...")
-        return extracted_json, errors
+        ExtractionInfo.extracted_data = extracted_data 
+        ExtractionInfo.errors = errors 
+        ExtractionInfo.real_extracted_data = extracted_json
+        return ExtractionInfo

@@ -1,4 +1,5 @@
 from src.data_extraction.interfaces.extraction_interface import ExtractionInterface
+from config.return_contracts.extraction_contract import ExtractionInfo
 import logging 
 logger = logging.getLogger(__name__)
 import io 
@@ -10,9 +11,10 @@ class ParquetExtractorErrors(Exception):
 class ParquetExtractor(ExtractionInterface): 
     def __init__(self, s3_client:S3Client) -> None: 
         self.client = s3_client 
-    def extract(self, bucket_name, layer) -> tuple[dict[str,pd.DataFrame], dict[str,dict]]:
+    def extract(self, bucket_name, layer) -> ExtractionInfo:
         extracted_parquets = {}
         errors = {}
+        extracted_data = {}
         try : 
             logger.info("Iniciando o fluxo de extração de parquets...")
             paginator = self.client.get_paginator('list_objects_v2')
@@ -20,6 +22,7 @@ class ParquetExtractor(ExtractionInterface):
             for page in pages: 
                 if 'Contents' in page: 
                     for object in page['Contents']: 
+                        extracted=False
                         try :
                             caminho_s3 = object['Key']
                             response = self.client.get_object(Bucket=bucket_name, Key=caminho_s3)
@@ -27,6 +30,7 @@ class ParquetExtractor(ExtractionInterface):
                             df = pd.read_parquet(io.BytesIO(bytes_content), engine='pyarrow')
                             extracted_parquets[caminho_s3] = df 
                             logger.info(f"O parquet {caminho_s3} foi extraído e transformado em DataFrame com sucesso! ")
+                            extracted=True
                         except ClientError as e: 
                             logger.warning(f'Erro ao obter o objeto {caminho_s3}: {str(e)} ')
                             errors[caminho_s3] = {'error': str(e)} 
@@ -36,10 +40,13 @@ class ParquetExtractor(ExtractionInterface):
                         except (TypeError, OSError, AttributeError) as e: 
                             logger.warning(f'O corpo de {caminho_s3} não pôde ser lido: {str(e)}')
                             errors[caminho_s3] = {'error': str(e)}
-                            
+                        extracted_data[caminho_s3] = extracted
                         
         except ClientError as e: 
             logger.warning(f"Erro ao listar os objetos: {str(e)}")
             raise ParquetExtractorErrors(f'Erro ao listar os objetos: {str(e)}') 
         logger.info("Finalizando o fluxo de extração de arquivos Parquet...")
-        return extracted_parquets, errors
+        ExtractionInfo.extracted_data = extracted_data 
+        ExtractionInfo.errors = errors 
+        ExtractionInfo.real_extracted_data = extracted_parquets
+        return ExtractionInfo

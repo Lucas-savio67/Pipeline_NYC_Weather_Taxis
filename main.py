@@ -29,7 +29,7 @@ def main():
         read_data = reading.orchestrate_reading(read_data_info)
         ingestion = IngestionOrchestration(DataIngestion)
         ingestion_data_info = return_ingestion_data(s3_client, credencials['bucket_name'], 'bronze', read_data)
-        ingest_data = ingestion.orchestrate_ingestion(ingestion_data_info)
+        #ingest_data = ingestion.orchestrate_ingestion(ingestion_data_info)
         extraction = ExtractiongOrchestration(DataExtraction)
         extract_data_info = return_extraction_data(s3_client, credencials['bucket_name'], 'bronze')
         extracted = extraction.orchestrate_extraction(extract_data_info)
