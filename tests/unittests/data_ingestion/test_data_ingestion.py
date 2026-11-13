@@ -3,12 +3,14 @@ from src.data_ingestion.implementations.api_s3_ingestion import APIS3Ingestion
 from unittest.mock import MagicMock
 import logging
 from botocore.exceptions import ClientError
-def test_success_data_ingestion(): 
+def test_success_data_ingestion(caplog): 
     s3_client = MagicMock()
     api_saver = APIS3Ingestion(s3_client)
     saver = DataIngestion(api_saver)
-    general =saver.ingest_general_data('bronze', {'NasaPower': {'data': [1,2,3], 'status':'success'}}, 'bucket_falso')
-    assert general == 'Dados injetados no S3, verifique se algum deu erro! '
+    with caplog.at_level(logging.INFO):
+        general =saver.ingest_general_data('bronze', {'NasaPower': {'data': [1,2,3], 'status':'success'}}, 'bucket_falso')
+    ingested_data = {'NasaPower': True}
+    assert f'Infomações de ingestão na camada bronze: \nDados injetados: {ingested_data} \nErros: {{}}'
 def test_critical_error(caplog): 
     s3_client = MagicMock()
     api_saver = APIS3Ingestion(s3_client)
@@ -33,4 +35,5 @@ def test_no_critical_error(caplog):
     with caplog.at_level(logging.WARNING): 
         save = saver.ingest_general_data('bronze', {'NasaPower': {'data': [1,2,3], 'status':'success'}} , 'bucket_falso')
     error = {'NasaPower': {'error': 'An error occurred (AccessDenied) when calling the PutObject operation: Access denied'}}
-    assert f'Dados com erro: {error}' in caplog.text
+    ingested_data = {'NasaPower': False}
+    assert f'Infomações de ingestão na camada bronze: \nDados injetados: {ingested_data} \nErros: {error}'

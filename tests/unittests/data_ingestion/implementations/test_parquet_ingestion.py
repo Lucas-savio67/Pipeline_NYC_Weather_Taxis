@@ -18,7 +18,8 @@ def test_success_parquet_ingestion():
         "bucket_falso",
         "bronze/parquets/yellow_taxis_trips/taxis_trips.parquet"
     )
-    assert save == {}
+    assert save.ingested_data == {'yellow_taxis_trips': True}
+    assert save.errors == {}
 def test_no_data(): 
     s3_client = MagicMock()
     saver = ParquetIngestionS3(s3_client) 
@@ -40,18 +41,12 @@ def test_clienterror(caplog):
         "UploadFile"
         )
     saver = ParquetIngestionS3(s3_client)
-    with caplog.at_level(logging.WARNING):
+    with pytest.raises(ParquetIngestionErrors):
         save =saver.save(
                         'bronze' , 
                         {'yellow_taxis_trips': ['taxis_trips.parquet']} , 
                         'bucket_falso'
                     )
-    assert 'injetar' in caplog.text
-    assert save == {
-        'yellow_taxis_trips': {
-            'error': 'An error occurred (AccessDenied) when calling the UploadFile operation: Access denied'
-        }
-    }
 def test_no_parquet_file(caplog): 
     s3_client = MagicMock()
     saver = ParquetIngestionS3(s3_client)
@@ -62,4 +57,5 @@ def test_no_parquet_file(caplog):
                                 'bucket_falso'
                             )
     assert 'referente' in caplog.text
-    assert save == {'yellow_taxis_trips': {'error': 'no_files'}}
+    assert save.errors== {'yellow_taxis_trips': {'error': 'no_files'}}
+    assert save.ingested_data == {'yellow_taxis_trips': False}

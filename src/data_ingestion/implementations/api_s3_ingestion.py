@@ -30,7 +30,7 @@ class APIS3Ingestion(IngestionInterface):
                     ingested = True 
                 except (TypeError, ValueError, UnicodeEncodeError) as e: 
                     logger.warning(f"Erro ao serializar os arquivo JSON {nome}: {str(e)}")
-                    errors[nome] = str(e)
+                    errors[nome] = {'error': str(e)}
                 ingested_data[nome] = ingested
         except ClientError as e: 
             logger.warning(f"Erro de cliente ao injetar as APIs para o bucket: {str(e)}")
