@@ -33,7 +33,7 @@ class APIReading(ReadingInterface):
                     data = response.json()
                     logger.info(f'A API {nome} foi lida com sucesso! ')
                     read = True 
-                    info_apis[nome] = read
+                    
                     read_apis[nome] = data 
                 except requests.exceptions.RequestException as e: 
                     logger.warning(f"Erro, {e} ao enviar a requisição! ")
@@ -45,6 +45,7 @@ class APIReading(ReadingInterface):
                 except Exception as e: 
                     logger.warning(f"Erro: {str(e)}! ")
                     errors[nome] = {'error': str(e)}
+                info_apis[nome] = read
         ReadingInfo.read_data = info_apis
         ReadingInfo.errors = errors
         ReadingInfo.real_read_data = read_apis 

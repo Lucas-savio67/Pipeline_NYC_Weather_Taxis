@@ -19,7 +19,9 @@ def test_success_api_reading(mock_get, caplog):
     reading = APIReading(fake_apis)
     with caplog.at_level(logging.INFO):
         read = reading.read_data()
-    assert read[0] == {'NasaPower': {'data': [1,2,3], 'status': 'success'}}
+    assert read.real_read_data == {'NasaPower': {'data': [1,2,3], 'status': 'success'}}
+    assert read.errors == {}
+    assert read.read_data == {'NasaPower':True}
     assert 'sucesso' in caplog.text
 @patch('src.data_reading.implementations.api_reading.requests.get')
 def test_request_error(mock_get, caplog): 
@@ -33,7 +35,8 @@ def test_request_error(mock_get, caplog):
     with caplog.at_level(logging.WARNING):
             read = reading.read_data()
     assert 'ao enviar' in caplog.text
-    assert read[1] == {'NasaPower': {'error': 'Erro na requisição'}}
+    assert read.errors == {'NasaPower': {'error': 'Erro na requisição'}}
+    assert read.read_data == {'NasaPower':False}
 def test_no_apis(): 
     
     reading = APIReading({})
@@ -55,4 +58,5 @@ def test_json_decode_error(mock_get, caplog):
     with caplog.at_level(logging.WARNING):
         read = reading.read_data()
     assert 'inválido' in caplog.text
-    assert read[1] == {'NasaPower': {'error': 'Json inválido! : line 1 column 1 (char 0)'}}
+    assert read.errors == {'NasaPower': {'error': 'Json inválido! : line 1 column 1 (char 0)'}}
+    assert read.read_data == {"NasaPower": False}
