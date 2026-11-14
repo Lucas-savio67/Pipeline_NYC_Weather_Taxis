@@ -1,4 +1,5 @@
 from src.data_transforming.interfaces.transformation_interface import TransformingInterface
+from config.return_contracts.transforming_contract import TransformingInfo
 from utils.schema_validator import validate_schema
 from typing import Any
 import pandas as pd
@@ -10,7 +11,7 @@ class TaxisTripsTransformer(TransformingInterface[dict[str,pd.DataFrame]]):
     def __init__(self, schema_validator:validate_schema, taxis_trips_rules:dict[str,Any]) -> None: 
         self.schema_validator = schema_validator
         self.rules = taxis_trips_rules
-    def transform(self, data: dict[str, pd.DataFrame]) -> tuple[pd.DataFrame, dict[str, dict]]:
+    def transform(self, data: dict[str, pd.DataFrame]) -> TransformingInfo:
         if not data: 
             logger.error("Erro, nenhum parquet referente a taxis_trips_nyc! ")
             raise TaxisTripsErrors("Erro, nenhum parquet referente a taxis_trips_nyc! ")
@@ -20,7 +21,9 @@ class TaxisTripsTransformer(TransformingInterface[dict[str,pd.DataFrame]]):
         try :
             logger.info("Iniciando o fluxo de transformação do parquet taxis_trips! ")
             df, errors = self.concatenate_dfs(data)
-            return df, errors 
+            TransformingInfo.real_transformed_data = df 
+            TransformingInfo.errors = errors 
+            return TransformingInfo
         except TaxisTripsErrors as e: 
             logger.warning(f'Erro crítico {str(e)} impossibilitou a transformação do parquet taxis_trips_nyc! ')
             raise TaxisTripsErrors(f"Erro crítico {str(e)} impossibilitou a transformação do parquet taxis_trips_nyc! ")

@@ -1,4 +1,5 @@
 from src.data_transforming.interfaces.transformation_interface import TransformingInterface 
+from config.return_contracts.transforming_contract import TransformingInfo
 from typing import Any
 import logging 
 logger = logging.getLogger(__name__)
@@ -8,7 +9,7 @@ class NasaPowerErrors(Exception):
 class NasaPowerTransformation(TransformingInterface[dict]): 
     def __init__(self, nasa_power_rules:dict[str,Any]) -> None: 
         self.rules = nasa_power_rules 
-    def transform(self, data:dict) -> tuple[pd.DataFrame, dict[str,dict]]:
+    def transform(self, data:dict) -> TransformingInfo:
         critical_error = {}
         if not data or data is None: 
             logger.error('Erro, não há nenhuma dado referente a NasaPower! ')
@@ -22,12 +23,12 @@ class NasaPowerTransformation(TransformingInterface[dict]):
             
             df = self.structure_json(data)
             df, errors = self.create_datetime_column(df)
-            
+            TransformingInfo.errors = errors
+            TransformingInfo.real_transformed_data = df 
             logger.info("Fluxo de transformação do JSON NasaPower finalizado! ")
-
-            return df, errors
+            return TransformingInfo
         except NasaPowerErrors as e: 
-            critical_error['NasaPower'] = {'error': str(e)}
+            TransformingInfo.errors['NasaPower'] = {'error': str(e)}
             raise NasaPowerErrors(critical_error)
 
             

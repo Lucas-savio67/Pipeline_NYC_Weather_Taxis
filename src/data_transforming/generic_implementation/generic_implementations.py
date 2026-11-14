@@ -1,4 +1,5 @@
 from src.data_transforming.interfaces.transformation_interface import TransformingInterface
+from config.return_contracts.transforming_contract import TransformingInfo
 import pandas as pd 
 import logging 
 logger = logging.getLogger(__name__)
@@ -8,7 +9,7 @@ class GenericTransformingErrors(Exception):
 class GenericTransforming(TransformingInterface[dict[str, pd.DataFrame]]): 
     def __init__(self, generic_rules:dict[str,Any]) -> None: 
         self.rules= generic_rules
-    def transform(self, data:dict[str, pd.DataFrame]) -> tuple[dict[str,pd.DataFrame], dict[str,dict]]:
+    def transform(self, data:dict[str, pd.DataFrame]) -> TransformingInfo:
         all_errors = {}
         all_info = {}
         transformed_data = {}
@@ -28,13 +29,16 @@ class GenericTransforming(TransformingInterface[dict[str, pd.DataFrame]]):
                 df,rp_info, rp_errors = self.remove_duplicates(df, nome, df_rules)
                 df,fn_info, fn_errors = self.fill_null_values(df, nome, df_rules)
                 df,rc_info,rc_errors = self.rename_columns(df, nome, df_rules)
-                logger.info(f"Finalizando o fluxo de trtansformações genéricas de {nome}! ")
+                logger.info(f"Finalizando o fluxo de transformações genéricas de {nome}! ")
+                transformed_data[nome] = df
                 all_errors[nome] = {'errors': [rp_errors, fn_errors, rc_errors]}
-                logger.info(f"Erros de {nome}: {all_errors}")
                 all_info[nome] = {'info': [rp_info, fn_info, rc_info]}
-                logger.info(f"Informações de transformações referentes a {nome}: {all_info}! ")
-                transformed_data[nome] = {'data': df, 'info': all_info} 
-        return transformed_data, all_errors
+            logger.info("Finalizando o fluxo de transformações genéricas...")
+        TransformingInfo.real_transformed_data = transformed_data
+        TransformingInfo.errors = all_errors
+        TransformingInfo.info = all_info
+                
+        return TransformingInfo
     def fill_null_values(self,df :pd.DataFrame, nome:str, rules:Any) -> tuple[pd.DataFrame, dict[str,Any], dict[str,dict]]: 
         fill_null_columns = rules.get('fill_null_columns', [])
         null_info = {}
