@@ -23,5 +23,5 @@ def test_success_ingestion_extraction(caplog):
         extraction = DataExtraction(json_extractor).extract_general_data('bucket_falso', 'bronze')
     expected_outcome = {key: fake_data['NasaPower']}
     assert extraction == expected_outcome
-    
-    assert f"Arquivos extraídos com sucesso: {expected_outcome.keys()}"
+    extracted_data = {'bronze/JSONs/NasaPower/NasaPower.json': True}
+    assert f"Informações de extração: \nDados extraídos: {extracted_data} \nErros: {{}}"
