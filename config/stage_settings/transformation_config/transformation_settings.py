@@ -6,7 +6,7 @@ class TransformingOrchestration:
         self.transforming = data_transforming 
     def orchestrate_transforming(self, implementations:dict[str, Any]) -> dict[str, pd.DataFrame]: 
         transformed_data = {}
-        for nome, model in implementations.items(): 
+        for model in implementations.values(): 
             transform = self.transforming(model.implementation).transform_general_data(model.data, model.nome) 
-            transformed_data[nome] = transform 
+            transformed_data.update(transform)
         return transformed_data

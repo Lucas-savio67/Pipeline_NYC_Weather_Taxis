@@ -73,7 +73,7 @@ def test_success_np_transforming_end_to_end():
                 
     }
     transforming = NasaPowerTransformation(fake_rules)
-    transformed_data, errors = transforming.transform(fake_data)
+    transform = transforming.transform(fake_data)
 
     expected_df = pd.DataFrame({
         'data_index': [0, 1, 2],
@@ -86,8 +86,10 @@ def test_success_np_transforming_end_to_end():
     })
 
     
-    pd.testing.assert_frame_equal(transformed_data, expected_df)
-    assert errors == {}
+    pd.testing.assert_frame_equal(
+        transform.real_transformed_data['NasaPower'], expected_df
+    )
+    assert transform.errors == {'NasaPower': {}}
 def test_no_data(): 
     fake_rules = { 
         'rules_fake': 'fake'

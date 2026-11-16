@@ -11,6 +11,7 @@ class NasaPowerTransformation(TransformingInterface[dict]):
         self.rules = nasa_power_rules 
     def transform(self, data:dict) -> TransformingInfo:
         critical_error = {}
+        
         if not data or data is None: 
             logger.error('Erro, não há nenhuma dado referente a NasaPower! ')
             raise NasaPowerErrors("Erro, não há nenhuma dado referente a NasaPower! ")
@@ -18,17 +19,24 @@ class NasaPowerTransformation(TransformingInterface[dict]):
             
             logger.error('Erro, nenhuma regra para NasaPower foi definida! ')
             raise NasaPowerErrors('Erro, nenhuma regra para NasaPower foi definida! ')
+        np_info = TransformingInfo()
+        transformed = False 
         try :
             logger.info("Iniciando o fluxo de transformação do JSON NasaPower! ")
             
             df = self.structure_json(data)
-            df, errors = self.create_datetime_column(df)
-            TransformingInfo.errors = errors
-            TransformingInfo.real_transformed_data = df 
+            df, df_errors= self.create_datetime_column(df)
+            if not df_errors: 
+                transformed = True 
+            np_info.errors['NasaPower'] = df_errors
+            np_info.real_transformed_data['NasaPower'] = df 
+            
+            np_info.transformed_data['NasaPower'] = {'specific': transformed}
+            np_info.info['NasaPower'] = {'info': {'tamanho_df': len(df) , 'tipos_colunas': df.dtypes.to_list()}}
             logger.info("Fluxo de transformação do JSON NasaPower finalizado! ")
-            return TransformingInfo
+            return np_info
         except NasaPowerErrors as e: 
-            TransformingInfo.errors['NasaPower'] = {'error': str(e)}
+            logger.error(f'Erro, crítico {str(e)} impossibilitou NasaPower de realizar transformações! ')
             raise NasaPowerErrors(critical_error)
 
             
@@ -52,7 +60,7 @@ class NasaPowerTransformation(TransformingInterface[dict]):
         
         
     def create_datetime_column(self, df:pd.DataFrame) -> tuple[pd.DataFrame, dict[str,dict]]: 
-        errors = {}  
+        errors = {} 
         coluna_datas = self.rules.get('datetime_columns', {})
         logger.info("Tratando colunas de data de NasaPower! ")
         if not coluna_datas: 

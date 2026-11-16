@@ -18,12 +18,18 @@ class TaxisTripsTransformer(TransformingInterface[dict[str,pd.DataFrame]]):
         if not self.rules: 
             logger.error('Erro, nenhuma regra de transformação de taxis_trips_nyc! ')
             raise TaxisTripsErrors('Erro, nenhuma regra de transformação de taxis_trips_nyc! ')
+        taxis_trips_info =TransformingInfo()
+        transformed = False
         try :
             logger.info("Iniciando o fluxo de transformação do parquet taxis_trips! ")
             df, errors = self.concatenate_dfs(data)
-            TransformingInfo.real_transformed_data = df 
-            TransformingInfo.errors = errors 
-            return TransformingInfo
+            if not errors: 
+                transformed = True 
+            taxis_trips_info.real_transformed_data['yellow_taxis_trips'] = df 
+            taxis_trips_info.errors['yellow_taxis_trips'] = errors 
+            taxis_trips_info.transformed_data['yellow_taxis_trips'] = {'specific': transformed}
+            taxis_trips_info.info['yellow_taxis_trips'] = {'info': {'tamanho': len(df) , 'tipos_colunas': df.dtypes.to_list()}}
+            return taxis_trips_info
         except TaxisTripsErrors as e: 
             logger.warning(f'Erro crítico {str(e)} impossibilitou a transformação do parquet taxis_trips_nyc! ')
             raise TaxisTripsErrors(f"Erro crítico {str(e)} impossibilitou a transformação do parquet taxis_trips_nyc! ")

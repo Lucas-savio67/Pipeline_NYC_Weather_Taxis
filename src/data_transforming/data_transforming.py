@@ -9,6 +9,7 @@ class DataTransforming:
     def transform_general_data(self, data:Any, nome:str) -> Any:
         try :
             transforming = self.interface.transform(data)
+            logger.info(f'Informações de Transformação: \nErros: {transforming.errors} \nDados transformados: {transforming.transformed_data} \n Info dos dados: {transforming.info}')
             return transforming.real_transformed_data
         except Exception as e: 
             logger.error(f"Erro crítico {e} impossibilitou {nome} de realizar transformações!  ")

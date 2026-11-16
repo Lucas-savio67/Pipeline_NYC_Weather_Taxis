@@ -20,11 +20,14 @@ class GenericTransforming(TransformingInterface[dict[str, pd.DataFrame]]):
             logger.error("Erro, regras de transformaçõs genéricas não foram definidas! ")
             raise GenericTransformingErrors('Erro, regras de transformaçõs genéricas não foram definidas! ')
         logger.info(f"Iniciando o fluxo de transformações genéricas! ")
+        generic_info = TransformingInfo()
         for nome , df in data.items(): 
+            transformed = False 
             logger.info(f"Iniciando as transformações genéricas de {nome}! ")
             df_rules = self.rules.get(nome, None)
             if not df_rules: 
                 logger.warning(f"Erro, regras de transformações genéricas não foram passadas para {nome}! ")
+
             else:
                 df,rp_info, rp_errors = self.remove_duplicates(df, nome, df_rules)
                 df,fn_info, fn_errors = self.fill_null_values(df, nome, df_rules)
@@ -33,12 +36,15 @@ class GenericTransforming(TransformingInterface[dict[str, pd.DataFrame]]):
                 transformed_data[nome] = df
                 all_errors[nome] = {'errors': [rp_errors, fn_errors, rc_errors]}
                 all_info[nome] = {'info': [rp_info, fn_info, rc_info]}
-            logger.info("Finalizando o fluxo de transformações genéricas...")
-        TransformingInfo.real_transformed_data = transformed_data
-        TransformingInfo.errors = all_errors
-        TransformingInfo.info = all_info
-                
-        return TransformingInfo
+        
+        logger.info("Finalizando o fluxo de transformações genéricas...")
+        
+        return TransformingInfo ( 
+            real_transformed_data=transformed_data,
+            errors=all_errors,
+            info=all_info,
+        )
+        
     def fill_null_values(self,df :pd.DataFrame, nome:str, rules:Any) -> tuple[pd.DataFrame, dict[str,Any], dict[str,dict]]: 
         fill_null_columns = rules.get('fill_null_columns', [])
         null_info = {}
