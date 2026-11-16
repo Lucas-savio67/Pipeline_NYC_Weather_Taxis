@@ -21,8 +21,8 @@ def test_success_data_extraction(caplog):
     extraction = DataExtraction(json_extraction)
     with caplog.at_level(logging.INFO):
         extract = extraction.extract_general_data('bucket_falso' ,'bronze')
-    expected_outcome = {key:expected_json}
-    assert f"Arquivos extraídos com sucesso: {expected_outcome.keys()}" in caplog.text
+    extracted_data = {'bronze/JSONs/NasaPower/NasaPower.json': True}
+    assert f"Informações de extração: \nDados extraídos: {extracted_data} \nErros: {{}}"
     assert extract== {key:expected_json}
 def test_critical_error(caplog):
     s3_client = MagicMock()
@@ -39,7 +39,7 @@ def test_critical_error(caplog):
             )
 
     assert "Erro crítico, impossível extrair os dados: " in caplog.text
-    assert extraction == {}
+    assert extraction == None
 def test_no_critical_error(caplog): 
     key = "bronze/JSONs/NasaPower/NasaPower.json"
     s3_client = MagicMock()
@@ -51,8 +51,8 @@ def test_no_critical_error(caplog):
     
     json_extractor = JsonExtractor(s3_client)
     
-    with caplog.at_level(logging.WARNING):
-        DataExtraction(json_extractor).extract_general_data('bucket_falso', 'bronze')
-    assert "Arquivos que deram erro na extração" in caplog.text
-    assert key in caplog.text
-    assert "Expecting property name enclosed in double quotes" in caplog.text
+    with caplog.at_level(logging.INFO):
+        extraction =  DataExtraction(json_extractor).extract_general_data('bucket_falso', 'bronze')
+    extracted_data = {'bronze/JSONs/NasaPower/NasaPower.json': False}
+    error = {'bronze/JSONs/NasaPower/NasaPower.json': {'error': 'Expecting property name enclosed in double quotes: line 1 column 2 (char 1)'}}
+    assert f"Informações de extração: \nDados extraídos: {extracted_data} \nErros: {error}" in caplog.text

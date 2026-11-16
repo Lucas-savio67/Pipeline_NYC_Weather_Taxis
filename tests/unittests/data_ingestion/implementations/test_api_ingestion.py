@@ -13,7 +13,7 @@ def test_success_api_ingestion():
 
     data = {'NasaPower' : {'data': [1,2,3], 'status': 'success'}}
 
-    saver.save('bronze', data , 'bucket_falso')
+    save = saver.save('bronze', data , 'bucket_falso')
 
     s3_client.put_object.assert_called_once()
 
@@ -22,7 +22,8 @@ def test_success_api_ingestion():
     assert kwargs["Bucket"] == "bucket_falso"
     assert kwargs["Key"] == "bronze/JSONs/NasaPower/NasaPower.json"
     assert json.loads(kwargs["Body"]) == data['NasaPower']
-
+    assert save.ingested_data == {'NasaPower': True}
+    assert save.errors == {}
 def test_clienterror_ingestion(caplog): 
     s3_client = MagicMock()
     
@@ -38,7 +39,7 @@ def test_clienterror_ingestion(caplog):
     saver = APIS3Ingestion(s3_client)
     
     data = {'NasaPower' : {'data': [1,2,3], 'status': 'success'}}
-    with caplog.at_level(logging.WARNING): 
+    with pytest.raises(APIIngestionErrors): 
         saver.save('bronze', data , 'bucket_falso')
     assert 'injetar' in caplog.text
 @patch('src.data_ingestion.implementations.api_s3_ingestion.json.dumps')
@@ -48,8 +49,10 @@ def test_json_error(mock_dumps, caplog):
     saver = APIS3Ingestion(s3_client)
     data = {'NasaPower' : {'data': [1,2,3], 'status': 'success'}}
     with caplog.at_level(logging.WARNING):
-        saver.save('bronze', data , 'bucket_falso')
+        save = saver.save('bronze', data , 'bucket_falso')
     assert 'serializar' in caplog.text
+    assert save.ingested_data == {'NasaPower': False}
+    assert save.errors == {'NasaPower': {'error': 'Erro ao serializar o json'}}
 def test_no_data(): 
     s3_client = MagicMock()
     saver = APIS3Ingestion(s3_client)

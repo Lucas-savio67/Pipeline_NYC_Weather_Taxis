@@ -36,7 +36,7 @@ def test_success_data_transforming(caplog):
     with caplog.at_level(logging.INFO):
         transform = transforming.transform_general_data(fake_data, 'NasaPower')
     
-    pd.testing.assert_frame_equal(transform, expected_df)
+    pd.testing.assert_frame_equal(transform['NasaPower'], expected_df)
     assert 'NasaPower' in caplog.text
 def test_critical_error(caplog): 
     fake_rules = {
@@ -67,7 +67,8 @@ def test_no_critical_error(caplog):
             }
     json_transforming = NasaPowerTransformation(fake_rules)
     transforming = DataTransforming(json_transforming) 
-    with caplog.at_level(logging.WARNING): 
+    with caplog.at_level(logging.INFO): 
         transforming.transform_general_data(fake_data, 'NasaPower')
-    error = {'data_hora_fake': {'error': "'data_hora_fake'"}}
-    assert f"Erros de transformação de NasaPower: {error}! " in caplog.text
+    error = {'NasaPower' : {'data_hora_fake': {'error': "'data_hora_fake'"}}}
+    data_status = {'NasaPower': {'specific': False}}
+    assert f'Informações de Transformação: \nErros: {error} \nDados transformados: {data_status}' in caplog.text

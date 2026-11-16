@@ -2,6 +2,7 @@ from src.data_transforming.generic_implementation.generic_implementations import
     GenericTransforming,
     GenericTransformingErrors,
 )
+import numpy as np
 import pandas as pd 
 import pytest
 
@@ -108,25 +109,41 @@ def test_generic_transforming_end_to_end():
     })
 
     transforming = GenericTransforming(fake_rules)
-    transformed_data, errors = transforming.transform(fake_data)
+    transform = transforming.transform(fake_data)
 
-    print(transformed_data['yellow_taxis_trips']['info'])
-    pd.testing.assert_frame_equal(transformed_data['yellow_taxis_trips']['data'], expected_df)
-    assert errors == {'yellow_taxis_trips': {'errors': [{}, {}, {}]}}
-    assert transformed_data['yellow_taxis_trips']['info'] == {
-        'yellow_taxis_trips': {
-            'info': [
-                {'qtd_duplicatas': {'antes': 1, 'depois': 0}},
-                {'qtd_nulos': {'nulos_antes': 1, 'depois': 0}},
-                {
-                    'renomeação_colunas': {
-                        'antes': ['campo_1', 'campo_2'],
-                        'depois': ['nome_novo', 'campo_2']
-                    }
-                }
-            ]
-        }
-    }
+    pd.testing.assert_frame_equal(transform.real_transformed_data['yellow_taxis_trips'], expected_df)
+    assert transform.errors == {'yellow_taxis_trips': {'errors': [{}, {}, {}]}}
+    print(transform.info)
+    assert transform.info == {
+    'yellow_taxis_trips': {
+        'info': [
+            {
+                'qtd_duplicatas': {
+                    'antes': np.int64(1),
+                    'depois': np.int64(0),
+                },
+            },
+            {
+                'qtd_nulos': {
+                    'nulos_antes': np.int64(1),
+                    'depois': np.int64(0),
+                },
+            },
+            {
+                'renomeação_colunas': {
+                    'antes': [
+                        'campo_1',
+                        'campo_2',
+                    ],
+                    'depois': [
+                        'nome_novo',
+                        'campo_2',
+                    ],
+                },
+            },
+        ],
+    },
+}
 
 
 def test_null_filling_missing_column():
@@ -237,11 +254,11 @@ def test_generic_transforming_collects_errors():
     }
 
     transforming = GenericTransforming(fake_rules)
-    transformed_data, errors = transforming.transform(fake_data)
+    transform = transforming.transform(fake_data)
 
-    result = transformed_data['yellow_taxis_trips']
-    pd.testing.assert_frame_equal(result['data'], fake_data['yellow_taxis_trips'])
-    assert errors == {'yellow_taxis_trips': {'errors': 
+    result = transform.real_transformed_data['yellow_taxis_trips']
+    pd.testing.assert_frame_equal(result, fake_data['yellow_taxis_trips'])
+    assert transform.errors == {'yellow_taxis_trips': {'errors': 
                                     [{'error': {'wrong_column': "Index(['coluna_inexistente'], dtype='str')"}},         
                                     {'error': {'column_name': "'outra_coluna_inexistente'"}}, {'error': {'wrong_name': 'mais_uma_coluna_inexistente'}}]}}
     

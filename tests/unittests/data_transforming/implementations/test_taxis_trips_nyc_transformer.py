@@ -34,13 +34,13 @@ def test_success_taxis_trips_transforming():
     }
 
     transforming = TaxisTripsTransformer(validate_schema, fake_rules)
-    transformed_data, errors = transforming.transform(fake_data)
-
+    transform = transforming.transform(fake_data)
     expected_df = pd.DataFrame({"VendorID": pd.Series([1, 2, 3], dtype="int32")})
+    
     pd.testing.assert_frame_equal(
-        transformed_data, expected_df
+        transform.real_transformed_data['yellow_taxis_trips'], expected_df
     )
-    assert errors == {}
+    assert transform.errors == {'yellow_taxis_trips': {}}
 
 
 def test_no_data():

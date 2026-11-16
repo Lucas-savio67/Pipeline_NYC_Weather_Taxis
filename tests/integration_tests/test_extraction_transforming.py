@@ -33,8 +33,9 @@ def test_success_extraction_transforming():
     )
 
     extraction = DataExtraction(JsonExtractor(s3_client))
-    dados_extraidos = extraction.extract_general_data(bucket, "bronze")
 
+    dados_extraidos = extraction.extract_general_data(bucket, "bronze")
+    
     regras = {
         "important_columns": ["data", "data_2", "data_index"],
         "datetime_columns": {
@@ -42,6 +43,10 @@ def test_success_extraction_transforming():
         },
     }
     transforming = DataTransforming(NasaPowerTransformation(regras))
+    
+    
+    
+    
     resultado = transforming.transform_general_data(
         dados_extraidos[key], "NasaPower"
     )
@@ -54,4 +59,4 @@ def test_success_extraction_transforming():
         "data_3": [1, 2],
         "data_4": [4, 5],
     })
-    pd.testing.assert_frame_equal(resultado, esperado)
+    pd.testing.assert_frame_equal(resultado["NasaPower"], esperado)

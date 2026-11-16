@@ -29,12 +29,12 @@ def test_success_parquet_extraction(caplog):
     )
 
     with caplog.at_level(logging.INFO):
-        extracted, errors = ParquetExtractor(s3_client).extract(
+        extraction = ParquetExtractor(s3_client).extract(
             "bucket_falso", "bronze"
         )
 
-    pd.testing.assert_frame_equal(extracted[key], expected_df)
-    assert errors == {}
+    pd.testing.assert_frame_equal(extraction.real_extracted_data[key], expected_df)
+    assert extraction.errors == {}
     assert f"O parquet {key} foi extraído" in caplog.text
 
 
@@ -44,12 +44,12 @@ def test_no_content():
         {"Fake_content": [1, 2]}
     ]
 
-    extracted, errors = ParquetExtractor(s3_client).extract(
+    extraction = ParquetExtractor(s3_client).extract(
         "bucket_falso", "bronze"
     )
 
-    assert extracted == {}
-    assert errors == {}
+    assert extraction.real_extracted_data == {}
+    assert extraction.errors == {}
 
 
 def test_list_objects_client_error(caplog):
@@ -78,12 +78,12 @@ def test_get_object_client_error(caplog):
     )
 
     with caplog.at_level(logging.WARNING):
-        extracted, errors = ParquetExtractor(s3_client).extract(
+        extraction = ParquetExtractor(s3_client).extract(
             "bucket_falso", "bronze"
         )
 
-    assert extracted == {}
-    assert "AccessDenied" in errors[key]["error"]
+    assert extraction.real_extracted_data == {}
+    assert "AccessDenied" in extraction.errors[key]["error"]
     assert f"Erro ao obter o objeto {key}" in caplog.text
 
 
@@ -109,10 +109,10 @@ def test_missing_body(caplog):
     s3_client.get_object.return_value = {"Body": None}
 
     with caplog.at_level(logging.WARNING):
-        extracted, errors = ParquetExtractor(s3_client).extract(
+        extraction = ParquetExtractor(s3_client).extract(
             "bucket_falso", "bronze"
         )
 
-    assert extracted == {}
-    assert key in errors
+    assert extraction.real_extracted_data == {}
+    assert key in extraction.errors
     assert f"O corpo de {key} não pôde ser lido" in caplog.text

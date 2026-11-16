@@ -1,4 +1,5 @@
 from src.data_reading.interfaces.reading_interface import ReadingInterface
+from config.return_contracts.reading_contract import ReadingInfo
 from typing import Any
 import json
 import requests 
@@ -9,15 +10,16 @@ class APIReadingErrors(Exception):
 class APIReading(ReadingInterface): 
     def __init__(self, apis:dict[str,dict]) -> None: 
         self.apis = apis
-        self.read_apis: dict[str, Any] = {}
-    #Send GET requisitions to the declarated APIs in self.apis 
-    def read_data(self) -> dict[str,Any]:
+    def read_data(self) -> ReadingInfo:
         errors = {}
+        info_apis = {}
+        read_apis = {}
         if not self.apis: 
             logger.error("Erro, nenhum API foi declarada! ")
             raise APIReadingErrors('Erro, nenhum API foi declarada! ')
         logger.info('Iniciando o fluxo de leitura de APIs! ')
         for nome, info_api in self.apis.items(): 
+            read = False 
             logger.info(f'Lendo a API {nome}...')
             url = info_api.get('url', None)
             if not url: 
@@ -30,7 +32,9 @@ class APIReading(ReadingInterface):
                     response.raise_for_status()
                     data = response.json()
                     logger.info(f'A API {nome} foi lida com sucesso! ')
-                    self.read_apis[nome] = data 
+                    read = True 
+                    
+                    read_apis[nome] = data 
                 except requests.exceptions.RequestException as e: 
                     logger.warning(f"Erro, {e} ao enviar a requisição! ")
                     errors[nome] = {'error': str(e)}
@@ -41,7 +45,11 @@ class APIReading(ReadingInterface):
                 except Exception as e: 
                     logger.warning(f"Erro: {str(e)}! ")
                     errors[nome] = {'error': str(e)}
+                info_apis[nome] = read
+        ReadingInfo.read_data = info_apis
+        ReadingInfo.errors = errors
+        ReadingInfo.real_read_data = read_apis 
         logger.info("Finalizando o fluxo de leitura de APIs! ")
-        return self.read_apis, errors
+        return ReadingInfo
 
 

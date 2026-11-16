@@ -6,9 +6,10 @@ from unittest.mock import patch, Mock, MagicMock
 from moto import mock_aws
 import boto3
 import json
+import logging
 @mock_aws
 @patch('src.data_reading.implementations.api_reading.requests.get')
-def test_success_integration(mock_get): 
+def test_success_integration(mock_get, caplog): 
     mock_response = Mock()
     mock_response.status_code = 200
     mock_response.json.return_value = {'data_1': [1,2,3], 'data_2': [4,5,6]}
@@ -25,9 +26,12 @@ def test_success_integration(mock_get):
     s3_client.create_bucket(Bucket='bucket_falso')
     ingestion = APIS3Ingestion(s3_client)
     general_ingestion = DataIngestion(ingestion)
-    general_ingestion.ingest_general_data('bronze', read , 'bucket_falso') 
+    with caplog.at_level(logging.INFO):
+        general = general_ingestion.ingest_general_data('bronze', read , 'bucket_falso') 
     response = s3_client.get_object(Bucket='bucket_falso', 
                                     Key='bronze/JSONs/NasaPower/NasaPower.json')
     injected_data = response["Body"].read()
     injected_data = json.loads(injected_data)
     assert injected_data == read['NasaPower']
+    ingested_data = {'NasaPower': True}
+    assert f'Infomações de ingestão na camada bronze: \nDados injetados: {ingested_data} \nErros: {{}}' in caplog.text

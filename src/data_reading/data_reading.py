@@ -1,4 +1,5 @@
 from src.data_reading.interfaces.reading_interface import ReadingInterface
+from src.data_reading.implementations.api_reading import APIReadingErrors
 from typing import Any
 import logging 
 logger = logging.getLogger(__name__)
@@ -10,13 +11,10 @@ class DataReading:
         logger.info("Iniciando a leitura dos dados! ")
         try:
             leitura  = self.data_reading.read_data()
-            logger.info("Fluxo de leitura dos dados finalizado! ")
-            if leitura[1]:
-                logger.warning(f'APIs com erro: {leitura[1]}')
-            logger.info(f"APIs lidas com sucesso: {leitura[0].keys()}")
-            return leitura[0] 
-        except Exception as e: 
-            logger.warning(f"Erro crítico: {str(e)}! ")
-            return {}
+            logger.info(f"Informações de leitura: \n'Dados lidos: {leitura.read_data} \nErros: {leitura.errors}")
+            return leitura.real_read_data
+        except APIReadingErrors as e: 
+            logger.error(f"Erro crítico: {str(e)}! ")
+            return None 
     
         

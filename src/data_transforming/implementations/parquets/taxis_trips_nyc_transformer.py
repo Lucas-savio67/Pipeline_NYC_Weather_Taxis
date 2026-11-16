@@ -1,4 +1,5 @@
 from src.data_transforming.interfaces.transformation_interface import TransformingInterface
+from config.return_contracts.transforming_contract import TransformingInfo
 from utils.schema_validator import validate_schema
 from typing import Any
 import pandas as pd
@@ -10,17 +11,25 @@ class TaxisTripsTransformer(TransformingInterface[dict[str,pd.DataFrame]]):
     def __init__(self, schema_validator:validate_schema, taxis_trips_rules:dict[str,Any]) -> None: 
         self.schema_validator = schema_validator
         self.rules = taxis_trips_rules
-    def transform(self, data: dict[str, pd.DataFrame]) -> tuple[pd.DataFrame, dict[str, dict]]:
+    def transform(self, data: dict[str, pd.DataFrame]) -> TransformingInfo:
         if not data: 
             logger.error("Erro, nenhum parquet referente a taxis_trips_nyc! ")
             raise TaxisTripsErrors("Erro, nenhum parquet referente a taxis_trips_nyc! ")
         if not self.rules: 
             logger.error('Erro, nenhuma regra de transformação de taxis_trips_nyc! ')
             raise TaxisTripsErrors('Erro, nenhuma regra de transformação de taxis_trips_nyc! ')
+        taxis_trips_info =TransformingInfo()
+        transformed = False
         try :
             logger.info("Iniciando o fluxo de transformação do parquet taxis_trips! ")
             df, errors = self.concatenate_dfs(data)
-            return df, errors 
+            if not errors: 
+                transformed = True 
+            taxis_trips_info.real_transformed_data['yellow_taxis_trips'] = df 
+            taxis_trips_info.errors['yellow_taxis_trips'] = errors 
+            taxis_trips_info.transformed_data['yellow_taxis_trips'] = {'specific': transformed}
+            taxis_trips_info.info['yellow_taxis_trips'] = {'info': {'tamanho': len(df) , 'tipos_colunas': df.dtypes.astype(str).to_list()}}
+            return taxis_trips_info
         except TaxisTripsErrors as e: 
             logger.warning(f'Erro crítico {str(e)} impossibilitou a transformação do parquet taxis_trips_nyc! ')
             raise TaxisTripsErrors(f"Erro crítico {str(e)} impossibilitou a transformação do parquet taxis_trips_nyc! ")
