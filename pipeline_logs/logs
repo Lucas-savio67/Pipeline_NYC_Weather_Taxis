@@ -1,63 +1,66 @@
-2026-11-14 15:14:42,892 - INFO - Iniciando a leitura dos dados! 
-2026-11-14 15:14:42,892 - INFO - Iniciando o fluxo de leitura de APIs! 
-2026-11-14 15:14:42,892 - INFO - Lendo a API NasaPower...
-2026-11-14 15:14:44,697 - INFO - A API NasaPower foi lida com sucesso! 
-2026-11-14 15:14:44,697 - INFO - Finalizando o fluxo de leitura de APIs! 
-2026-11-14 15:14:44,698 - INFO - Informações de leitura: 
+2026-11-16 13:21:58,448 - INFO - Iniciando a leitura dos dados! 
+2026-11-16 13:21:58,448 - INFO - Iniciando o fluxo de leitura de APIs! 
+2026-11-16 13:21:58,448 - INFO - Lendo a API NasaPower...
+2026-11-16 13:22:00,472 - INFO - A API NasaPower foi lida com sucesso! 
+2026-11-16 13:22:00,473 - INFO - Finalizando o fluxo de leitura de APIs! 
+2026-11-16 13:22:00,474 - INFO - Informações de leitura: 
 'Dados lidos: {'NasaPower': True} 
 Erros: {}
-2026-11-14 15:14:44,699 - INFO - Iniciando o fluxo de extração dos dados...
-2026-11-14 15:14:44,699 - INFO - Iniciando a extração de arquivos JSON do S3... 
-2026-11-14 15:14:46,053 - INFO - O JSON referente a bronze/JSONs/NasaPower/NasaPower.json foi extraído com sucesso! 
-2026-11-14 15:14:46,053 - INFO - Finalizando o fluxo de extração de JSONs...
-2026-11-14 15:14:46,053 - INFO - Informações de extração: 
+2026-11-16 13:22:00,475 - INFO - Iniciando o fluxo de extração dos dados...
+2026-11-16 13:22:00,476 - INFO - Iniciando a extração de arquivos JSON do S3... 
+2026-11-16 13:22:02,366 - INFO - O JSON referente a bronze/JSONs/NasaPower/NasaPower.json foi extraído com sucesso! 
+2026-11-16 13:22:02,366 - INFO - Finalizando o fluxo de extração de JSONs...
+2026-11-16 13:22:02,366 - INFO - Informações de extração: 
 Dados extraídos: {'bronze/JSONs/NasaPower/NasaPower.json': True} 
 Erros: {}
-2026-11-14 15:14:46,053 - INFO - Iniciando o fluxo de extração dos dados...
-2026-11-14 15:14:46,053 - INFO - Iniciando o fluxo de extração de parquets...
-2026-11-14 15:14:50,422 - INFO - O parquet bronze/parquets/yellow_taxis_trips/data\parquets\yellow_taxis_trips_NYC\yellow_tripdata_2026-01.parquet foi extraído e transformado em DataFrame com sucesso! 
-2026-11-14 15:14:53,670 - INFO - O parquet bronze/parquets/yellow_taxis_trips/data\parquets\yellow_taxis_trips_NYC\yellow_tripdata_2026-02.parquet foi extraído e transformado em DataFrame com sucesso! 
-2026-11-14 15:14:57,239 - INFO - O parquet bronze/parquets/yellow_taxis_trips/data\parquets\yellow_taxis_trips_NYC\yellow_tripdata_2026-03.parquet foi extraído e transformado em DataFrame com sucesso! 
-2026-11-14 15:15:00,821 - INFO - O parquet bronze/parquets/yellow_taxis_trips/data\parquets\yellow_taxis_trips_NYC\yellow_tripdata_2026-04.parquet foi extraído e transformado em DataFrame com sucesso! 
-2026-11-14 15:15:04,679 - INFO - O parquet bronze/parquets/yellow_taxis_trips/data\parquets\yellow_taxis_trips_NYC\yellow_tripdata_2026-05.parquet foi extraído e transformado em DataFrame com sucesso! 
-2026-11-14 15:15:08,106 - INFO - O parquet bronze/parquets/yellow_taxis_trips/data\parquets\yellow_taxis_trips_NYC\yellow_tripdata_2026-06.parquet foi extraído e transformado em DataFrame com sucesso! 
-2026-11-14 15:15:11,342 - INFO - O parquet bronze/parquets/yellow_taxis_trips/data\parquets\yellow_taxis_trips_NYC\yellow_tripdata_2026-07.parquet foi extraído e transformado em DataFrame com sucesso! 
-2026-11-14 15:15:14,473 - INFO - O parquet bronze/parquets/yellow_taxis_trips/data\parquets\yellow_taxis_trips_NYC\yellow_tripdata_2026-08.parquet foi extraído e transformado em DataFrame com sucesso! 
-2026-11-14 15:15:18,060 - INFO - O parquet bronze/parquets/yellow_taxis_trips/data\parquets\yellow_taxis_trips_NYC\yellow_tripdata_2026-09.parquet foi extraído e transformado em DataFrame com sucesso! 
-2026-11-14 15:15:18,060 - INFO - Finalizando o fluxo de extração de arquivos Parquet...
-2026-11-14 15:15:18,063 - INFO - Informações de extração: 
+2026-11-16 13:22:02,366 - INFO - Iniciando o fluxo de extração dos dados...
+2026-11-16 13:22:02,366 - INFO - Iniciando o fluxo de extração de parquets...
+2026-11-16 13:22:17,903 - INFO - O parquet bronze/parquets/yellow_taxis_trips/data\parquets\yellow_taxis_trips_NYC\yellow_tripdata_2026-01.parquet foi extraído e transformado em DataFrame com sucesso! 
+2026-11-16 13:22:27,887 - INFO - O parquet bronze/parquets/yellow_taxis_trips/data\parquets\yellow_taxis_trips_NYC\yellow_tripdata_2026-02.parquet foi extraído e transformado em DataFrame com sucesso! 
+2026-11-16 13:22:41,247 - INFO - O parquet bronze/parquets/yellow_taxis_trips/data\parquets\yellow_taxis_trips_NYC\yellow_tripdata_2026-03.parquet foi extraído e transformado em DataFrame com sucesso! 
+2026-11-16 13:23:22,455 - INFO - O parquet bronze/parquets/yellow_taxis_trips/data\parquets\yellow_taxis_trips_NYC\yellow_tripdata_2026-04.parquet foi extraído e transformado em DataFrame com sucesso! 
+2026-11-16 13:23:37,847 - INFO - O parquet bronze/parquets/yellow_taxis_trips/data\parquets\yellow_taxis_trips_NYC\yellow_tripdata_2026-05.parquet foi extraído e transformado em DataFrame com sucesso! 
+2026-11-16 13:23:47,550 - INFO - O parquet bronze/parquets/yellow_taxis_trips/data\parquets\yellow_taxis_trips_NYC\yellow_tripdata_2026-06.parquet foi extraído e transformado em DataFrame com sucesso! 
+2026-11-16 13:23:58,795 - INFO - O parquet bronze/parquets/yellow_taxis_trips/data\parquets\yellow_taxis_trips_NYC\yellow_tripdata_2026-07.parquet foi extraído e transformado em DataFrame com sucesso! 
+2026-11-16 13:24:21,591 - INFO - O parquet bronze/parquets/yellow_taxis_trips/data\parquets\yellow_taxis_trips_NYC\yellow_tripdata_2026-08.parquet foi extraído e transformado em DataFrame com sucesso! 
+2026-11-16 13:24:31,806 - INFO - O parquet bronze/parquets/yellow_taxis_trips/data\parquets\yellow_taxis_trips_NYC\yellow_tripdata_2026-09.parquet foi extraído e transformado em DataFrame com sucesso! 
+2026-11-16 13:24:31,807 - INFO - Finalizando o fluxo de extração de arquivos Parquet...
+2026-11-16 13:24:31,812 - INFO - Informações de extração: 
 Dados extraídos: {'bronze/parquets/yellow_taxis_trips/data\\parquets\\yellow_taxis_trips_NYC\\yellow_tripdata_2026-01.parquet': True, 'bronze/parquets/yellow_taxis_trips/data\\parquets\\yellow_taxis_trips_NYC\\yellow_tripdata_2026-02.parquet': True, 'bronze/parquets/yellow_taxis_trips/data\\parquets\\yellow_taxis_trips_NYC\\yellow_tripdata_2026-03.parquet': True, 'bronze/parquets/yellow_taxis_trips/data\\parquets\\yellow_taxis_trips_NYC\\yellow_tripdata_2026-04.parquet': True, 'bronze/parquets/yellow_taxis_trips/data\\parquets\\yellow_taxis_trips_NYC\\yellow_tripdata_2026-05.parquet': True, 'bronze/parquets/yellow_taxis_trips/data\\parquets\\yellow_taxis_trips_NYC\\yellow_tripdata_2026-06.parquet': True, 'bronze/parquets/yellow_taxis_trips/data\\parquets\\yellow_taxis_trips_NYC\\yellow_tripdata_2026-07.parquet': True, 'bronze/parquets/yellow_taxis_trips/data\\parquets\\yellow_taxis_trips_NYC\\yellow_tripdata_2026-08.parquet': True, 'bronze/parquets/yellow_taxis_trips/data\\parquets\\yellow_taxis_trips_NYC\\yellow_tripdata_2026-09.parquet': True} 
 Erros: {}
-2026-11-14 15:15:18,063 - INFO - Iniciando o fluxo de transformação do parquet taxis_trips! 
-2026-11-14 15:15:18,063 - INFO - Inciando o fluxo de concatenação de DFs referentes a taxis_trips_nyc...
-2026-11-14 15:15:19,415 - INFO - Informações de Transformação: 
+2026-11-16 13:24:31,812 - INFO - Iniciando o fluxo de transformação do parquet taxis_trips! 
+2026-11-16 13:24:31,812 - INFO - Inciando o fluxo de concatenação de DFs referentes a taxis_trips_nyc...
+2026-11-16 13:24:33,476 - INFO - Informações de Transformação: 
 Erros: {'yellow_taxis_trips': {}} 
-Dados transformados: {'yellow_taxis_trips': {'specific': True}}
-2026-11-14 15:15:19,415 - INFO - Iniciando o fluxo de transformação do JSON NasaPower! 
-2026-11-14 15:15:19,415 - INFO - Estruturando o JSON NasaPower...
-2026-11-14 15:15:19,421 - INFO - Tratando colunas de data de NasaPower! 
-2026-11-14 15:15:19,437 - INFO - A coluna data_hora foi transformada em datetime com seu respectivo formato! 
-2026-11-14 15:15:19,438 - INFO - Fluxo de tratamento de colunas datetime terminando! 
-2026-11-14 15:15:19,438 - INFO - Fluxo de transformação do JSON NasaPower finalizado! 
-2026-11-14 15:15:19,438 - INFO - Informações de Transformação: 
+Dados transformados: {'yellow_taxis_trips': {'specific': True}} 
+ Info dos dados: {'yellow_taxis_trips': {'info': {'tamanho': 33579399, 'tipos_colunas': ['int32', 'datetime64[us]', 'datetime64[us]', 'float64', 'float64', 'float64', 'str', 'int32', 'int32', 'int64', 'float64', 'float64', 'float64', 'float64', 'float64', 'float64', 'float64', 'float64', 'float64', 'float64', 'str']}}}
+2026-11-16 13:24:33,476 - INFO - Iniciando o fluxo de transformação do JSON NasaPower! 
+2026-11-16 13:24:33,476 - INFO - Estruturando o JSON NasaPower...
+2026-11-16 13:24:33,491 - INFO - Tratando colunas de data de NasaPower! 
+2026-11-16 13:24:33,514 - INFO - A coluna data_hora foi transformada em datetime com seu respectivo formato! 
+2026-11-16 13:24:33,514 - INFO - Fluxo de tratamento de colunas datetime terminando! 
+2026-11-16 13:24:33,514 - INFO - Fluxo de transformação do JSON NasaPower finalizado! 
+2026-11-16 13:24:33,514 - INFO - Informações de Transformação: 
 Erros: {'NasaPower': {}} 
-Dados transformados: {'NasaPower': {'specific': True}}
-2026-11-14 15:15:19,438 - INFO - Iniciando o fluxo de transformações genéricas! 
-2026-11-14 15:15:19,438 - INFO - Iniciando as transformações genéricas de yellow_taxis_trips! 
-2026-11-14 15:16:27,197 - INFO - Iniciando o fluxo de remoção de duplicatas de yellow_taxis_trips! 
-2026-11-14 15:17:36,487 - INFO - Removendo duplicatas de yellow_taxis_trips sem subset! 
-2026-11-14 15:18:49,356 - INFO - Finalizando o fluxo de remoção de duplicatas! 
-2026-11-14 15:18:49,362 - INFO - Iniciando o fluxo de preenchimento de nulos de yellow_taxis_trips! 
-2026-11-14 15:18:52,192 - INFO - A coluna passenger_count teve seus valores nulos preenchidos, 0 valores nulos! 
-2026-11-14 15:18:52,192 - INFO - Finalizando o fluxo de preenchimento de nulos de yellow_taxis_trips! 
-2026-11-14 15:18:53,321 - INFO - Iniciando o fluxo de renomeação de colunas de yellow_taxis_trips! 
-2026-11-14 15:18:53,340 - INFO - A coluna passenger_count foi renomeada com sucesso! 
-2026-11-14 15:18:53,342 - INFO - A coluna payment_type foi renomeada com sucesso! 
-2026-11-14 15:18:53,342 - INFO - Finalizando o fluxo de renomeação de colunas de yellow_taxis_trips! 
-2026-11-14 15:18:53,343 - INFO - Finalizando o fluxo de transformações genéricas de yellow_taxis_trips! 
-2026-11-14 15:18:53,343 - INFO - Iniciando as transformações genéricas de NasaPower! 
-2026-11-14 15:18:53,343 - WARNING - Erro, regras de transformações genéricas não foram passadas para NasaPower! 
-2026-11-14 15:18:53,343 - INFO - Finalizando o fluxo de transformações genéricas...
-2026-11-14 15:18:53,344 - INFO - Informações de Transformação: 
+Dados transformados: {'NasaPower': {'specific': True}} 
+ Info dos dados: {'NasaPower': {'info': {'tamanho_df': 6552, 'tipos_colunas': ['datetime64[us]', 'float64']}}}
+2026-11-16 13:24:33,514 - INFO - Iniciando o fluxo de transformações genéricas! 
+2026-11-16 13:24:33,514 - INFO - Iniciando as transformações genéricas de yellow_taxis_trips! 
+2026-11-16 13:25:50,876 - INFO - Iniciando o fluxo de remoção de duplicatas de yellow_taxis_trips! 
+2026-11-16 13:27:11,864 - INFO - Removendo duplicatas de yellow_taxis_trips sem subset! 
+2026-11-16 13:28:27,613 - INFO - Finalizando o fluxo de remoção de duplicatas! 
+2026-11-16 13:28:27,618 - INFO - Iniciando o fluxo de preenchimento de nulos de yellow_taxis_trips! 
+2026-11-16 13:28:31,598 - INFO - A coluna passenger_count teve seus valores nulos preenchidos, 0 valores nulos! 
+2026-11-16 13:28:31,598 - INFO - Finalizando o fluxo de preenchimento de nulos de yellow_taxis_trips! 
+2026-11-16 13:28:32,845 - INFO - Iniciando o fluxo de renomeação de colunas de yellow_taxis_trips! 
+2026-11-16 13:28:32,891 - INFO - A coluna passenger_count foi renomeada com sucesso! 
+2026-11-16 13:28:32,894 - INFO - A coluna payment_type foi renomeada com sucesso! 
+2026-11-16 13:28:32,894 - INFO - Finalizando o fluxo de renomeação de colunas de yellow_taxis_trips! 
+2026-11-16 13:28:32,894 - INFO - Finalizando o fluxo de transformações genéricas de yellow_taxis_trips! 
+2026-11-16 13:28:32,894 - INFO - Iniciando as transformações genéricas de NasaPower! 
+2026-11-16 13:28:32,894 - WARNING - Erro, regras de transformações genéricas não foram passadas para NasaPower! 
+2026-11-16 13:28:32,894 - INFO - Finalizando o fluxo de transformações genéricas...
+2026-11-16 13:28:32,898 - INFO - Informações de Transformação: 
 Erros: {'yellow_taxis_trips': {'errors': [{}, {}, {}]}} 
-Dados transformados: {}
+Dados transformados: {} 
+ Info dos dados: {'yellow_taxis_trips': {'info': [{'qtd_duplicatas': {'antes': np.int64(7), 'depois': np.int64(0)}}, {'qtd_nulos': {'nulos_antes': np.int64(74021359), 'depois': np.int64(65114258)}}, {'renomeação_colunas': {'antes': ['VendorID', 'tpep_pickup_datetime', 'tpep_dropoff_datetime', 'passenger_count', 'trip_distance', 'RatecodeID', 'store_and_fwd_flag', 'PULocationID', 'DOLocationID', 'payment_type', 'fare_amount', 'extra', 'mta_tax', 'tip_amount', 'tolls_amount', 'improvement_surcharge', 'total_amount', 'congestion_surcharge', 'Airport_fee', 'cbd_congestion_fee', 'request_source'], 'depois': ['VendorID', 'tpep_pickup_datetime', 'tpep_dropoff_datetime', 'qtd_passageiros', 'trip_distance', 'RatecodeID', 'store_and_fwd_flag', 'PULocationID', 'DOLocationID', 'tipo_pagamento', 'fare_amount', 'extra', 'mta_tax', 'tip_amount', 'tolls_amount', 'improvement_surcharge', 'total_amount', 'congestion_surcharge', 'Airport_fee', 'cbd_congestion_fee', 'request_source']}}]}}

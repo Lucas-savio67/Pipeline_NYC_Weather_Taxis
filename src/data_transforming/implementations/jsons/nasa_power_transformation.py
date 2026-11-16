@@ -32,7 +32,7 @@ class NasaPowerTransformation(TransformingInterface[dict]):
             np_info.real_transformed_data['NasaPower'] = df 
             
             np_info.transformed_data['NasaPower'] = {'specific': transformed}
-            np_info.info['NasaPower'] = {'info': {'tamanho_df': len(df) , 'tipos_colunas': df.dtypes.to_list()}}
+            np_info.info['NasaPower'] = {'info': {'tamanho_df': len(df) , 'tipos_colunas': df.dtypes.astype(str).to_list()}}
             logger.info("Fluxo de transformação do JSON NasaPower finalizado! ")
             return np_info
         except NasaPowerErrors as e: 

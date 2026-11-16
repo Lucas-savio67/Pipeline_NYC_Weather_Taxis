@@ -28,7 +28,7 @@ class TaxisTripsTransformer(TransformingInterface[dict[str,pd.DataFrame]]):
             taxis_trips_info.real_transformed_data['yellow_taxis_trips'] = df 
             taxis_trips_info.errors['yellow_taxis_trips'] = errors 
             taxis_trips_info.transformed_data['yellow_taxis_trips'] = {'specific': transformed}
-            taxis_trips_info.info['yellow_taxis_trips'] = {'info': {'tamanho': len(df) , 'tipos_colunas': df.dtypes.to_list()}}
+            taxis_trips_info.info['yellow_taxis_trips'] = {'info': {'tamanho': len(df) , 'tipos_colunas': df.dtypes.astype(str).to_list()}}
             return taxis_trips_info
         except TaxisTripsErrors as e: 
             logger.warning(f'Erro crítico {str(e)} impossibilitou a transformação do parquet taxis_trips_nyc! ')
