@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock, patch
 from pathlib import Path
 import json
-from src.data_ingestion.implementations.api_s3_ingestion import APIS3Ingestion, APIIngestionErrors
+from src.data_ingestion.bronze.implementations.api_s3_ingestion import APIS3Ingestion, APIIngestionErrors
 from botocore.exceptions import ClientError
 import logging 
 import pytest

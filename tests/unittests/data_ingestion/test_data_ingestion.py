@@ -1,5 +1,5 @@
 from src.data_ingestion.data_ingestion import DataIngestion
-from src.data_ingestion.implementations.api_s3_ingestion import APIS3Ingestion
+from src.data_ingestion.bronze.implementations.api_s3_ingestion import APIS3Ingestion
 from unittest.mock import MagicMock
 import logging
 from botocore.exceptions import ClientError

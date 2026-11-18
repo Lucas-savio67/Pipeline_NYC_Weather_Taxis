@@ -1,4 +1,4 @@
-from src.data_ingestion.implementations.parquet_ingestion import ParquetIngestionErrors, ParquetIngestionS3 
+from src.data_ingestion.bronze.implementations.parquet_ingestion import ParquetIngestionErrors, ParquetIngestionS3 
 from unittest.mock import MagicMock
 from pathlib import Path
 import logging 
