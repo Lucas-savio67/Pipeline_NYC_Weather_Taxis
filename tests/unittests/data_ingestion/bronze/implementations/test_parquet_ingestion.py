@@ -2,7 +2,7 @@ from src.data_ingestion.bronze.implementations.parquet_ingestion import ParquetI
 from unittest.mock import MagicMock
 from pathlib import Path
 import logging 
-from botocore.exceptions import ClientError
+from botocore.exceptions import ClientError, BotoCoreError
 import pytest
 def test_success_parquet_ingestion(): 
     s3_client = MagicMock()
@@ -59,3 +59,13 @@ def test_no_parquet_file(caplog):
     assert 'referente' in caplog.text
     assert save.errors== {'yellow_taxis_trips': {'error': 'no_files'}}
     assert save.ingested_data == {'yellow_taxis_trips': False}
+def test_botocorre_error(): 
+    s3_client = MagicMock()
+    
+    s3_client.upload_file.side_effect = BotoCoreError( 
+        motivo='Erro interno'
+    )
+    fake_data =  {'yellow_taxis_trips': ['taxis_trips.parquet']} 
+    saver = ParquetIngestionS3(s3_client)
+    with pytest.raises(ParquetIngestionErrors):
+        saver.save('bronze', fake_data, 'bucket_falso')

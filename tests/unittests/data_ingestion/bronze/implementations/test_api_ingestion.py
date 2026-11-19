@@ -2,7 +2,7 @@ from unittest.mock import MagicMock, patch
 from pathlib import Path
 import json
 from src.data_ingestion.bronze.implementations.api_s3_ingestion import APIS3Ingestion, APIIngestionErrors
-from botocore.exceptions import ClientError
+from botocore.exceptions import ClientError, BotoCoreError
 import logging 
 import pytest
 def test_success_api_ingestion():
@@ -58,3 +58,12 @@ def test_no_data():
     saver = APIS3Ingestion(s3_client)
     with pytest.raises(APIIngestionErrors): 
         saver.save('bronze', {} , 'bucket_falso')
+def test_botocorre_error(): 
+    s3_client = MagicMock()
+    fake_data = {'NasaPower': {'data': [1,2,3]}}
+    s3_client.put_object.side_effect = BotoCoreError( 
+        motivo='Erro interno'
+    )
+    saver = APIS3Ingestion(s3_client)
+    with pytest.raises(APIIngestionErrors):
+        saver.save('bronze', fake_data, 'bucket_falso')
