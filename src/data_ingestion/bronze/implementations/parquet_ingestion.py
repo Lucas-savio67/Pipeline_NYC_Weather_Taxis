@@ -37,8 +37,8 @@ class ParquetIngestionS3(IngestionInterface):
             logger.warning(f"Erro de cliente ao injetar os parquets no S3: {str(e)}! ")
             raise ParquetIngestionErrors
         except BotoCoreError as e: 
-            logger.warning(f'Erro botocore ao inbjetar os parquets no S3: {str(e)}! ')
-            raise ParquetIngestionErrors
+            logger.warning(f'Erro botocore ao injetar os parquets no S3: {str(e)}! ')
+            raise ParquetIngestionErrors(f'Erro botocore ao injetar os parquets no S3: {str(e)}! ')
         IngestionInfo.errors = errors 
         IngestionInfo.ingested_data = ingested_data
         logger.info("Finalizando o fluxo de ingestão de parquets...")

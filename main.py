@@ -7,12 +7,13 @@ import boto3
 from config.aws_credencials import load_aws_credencials, CredencialsErrors
 from config.stage_settings.reading_config.reading_settings import ReadingOrchestration
 from config.stage_settings.reading_config.reading_data import return_read_data
-from config.stage_settings.ingestion_config.ingestion_data import return_ingestion_data 
+from config.stage_settings.ingestion_config.ingestion_data import return_ingestion_data , return_silver_ingestion_data
 from config.stage_settings.ingestion_config.ingestion_settings import IngestionOrchestration
 from config.stage_settings.extraction_config.extraction_data import return_extraction_data 
 from config.stage_settings.extraction_config.extraction_settings import ExtractiongOrchestration
 from config.stage_settings.transformation_config.transformation_settings import TransformingOrchestration 
 from config.stage_settings.transformation_config.transformation_data import return_specific_transforming_data, return_generic_transforming_data
+
 
 logger = logging.getLogger(__name__)
 def main():
@@ -38,6 +39,10 @@ def main():
         specific_transform = transformation.orchestrate_transforming(transform_data_info)
         generic_transform_data_info = return_generic_transforming_data(specific_transform)
         generic_transform = transformation.orchestrate_transforming(generic_transform_data_info)
+        silver_ingestion = IngestionOrchestration(DataIngestion) 
+        silver_ingestion_data_info = return_silver_ingestion_data(s3_client, credencials['bucket_name'], 'silver', generic_transform)
+        ingest_data = silver_ingestion.orchestrate_ingestion(silver_ingestion_data_info)
+        print(ingest_data)
         return 'Fluxo finalizado com sucesso! '
     except CredencialsErrors as e: 
         logger.warning(f"Erro ao carregar credenciais AWS, impossível iniciar o fluxo: {str(e)}")
