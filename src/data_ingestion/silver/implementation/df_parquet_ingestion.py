@@ -12,6 +12,9 @@ class DfParquetIngestion(IngestionInterface):
     def __init__(self, s3_client:S3Client) -> None: 
         self.client = s3_client
     def save(self, layer:str, data:dict[str, pd.DataFrame], bucket_name:str) -> IngestionInfo:
+        if not data: 
+            logger.error("Erro, nenhum dado foi transformado! ")
+            raise DfParquetIngestionErrors("Erro, nenhum dado foi transformado! ")
         logger.info("Iniciando o fluxo de ingestão na camada silver do S3...")
         ingested_data = {}
         errors = {}
