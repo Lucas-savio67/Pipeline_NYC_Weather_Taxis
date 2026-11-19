@@ -42,7 +42,7 @@ def test_clienterror_ingestion(caplog):
     with pytest.raises(APIIngestionErrors): 
         saver.save('bronze', data , 'bucket_falso')
     assert 'injetar' in caplog.text
-@patch('src.data_ingestion.implementations.api_s3_ingestion.json.dumps')
+@patch('src.data_ingestion.bronze.implementations.api_s3_ingestion.json.dumps')
 def test_json_error(mock_dumps, caplog): 
     mock_dumps.side_effect = TypeError("Erro ao serializar o json")
     s3_client = MagicMock()

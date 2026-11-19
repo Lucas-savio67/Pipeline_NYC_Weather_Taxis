@@ -29,7 +29,7 @@ def test_no_data():
                 {} , 
                 'bucket_falso'
             )
-def test_clienterror(caplog): 
+def test_clienterror(): 
     s3_client = MagicMock()
     s3_client.upload_file.side_effect = ClientError(
         {

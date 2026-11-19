@@ -1,6 +1,6 @@
 from src.data_extraction.implementations.json_extractor import JsonExtractor 
 from src.data_extraction.data_extraction import DataExtraction 
-from src.data_ingestion.implementations.api_s3_ingestion import APIS3Ingestion 
+from src.data_ingestion.bronze.implementations.api_s3_ingestion import APIS3Ingestion 
 from src.data_ingestion.data_ingestion import DataIngestion
 from moto import mock_aws
 from unittest.mock import MagicMock

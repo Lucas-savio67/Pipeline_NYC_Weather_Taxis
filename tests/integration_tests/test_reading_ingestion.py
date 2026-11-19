@@ -1,4 +1,4 @@
-from data_ingestion.bronze.implementations.api_s3_ingestion import APIS3Ingestion 
+from src.data_ingestion.bronze.implementations.api_s3_ingestion import APIS3Ingestion 
 from src.data_reading.implementations.api_reading import APIReading 
 from src.data_reading.data_reading import DataReading 
 from src.data_ingestion.data_ingestion import DataIngestion 
