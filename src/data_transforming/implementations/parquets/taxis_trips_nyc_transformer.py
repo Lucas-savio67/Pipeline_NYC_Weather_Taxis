@@ -12,6 +12,7 @@ class TaxisTripsTransformer(TransformingInterface[dict[str,pd.DataFrame]]):
         self.schema_validator = schema_validator
         self.rules = taxis_trips_rules
     def transform(self, data: dict[str, pd.DataFrame]) -> TransformingInfo:
+        all_errors = {}
         if not data: 
             logger.error("Erro, nenhum parquet referente a taxis_trips_nyc! ")
             raise TaxisTripsErrors("Erro, nenhum parquet referente a taxis_trips_nyc! ")
@@ -24,9 +25,11 @@ class TaxisTripsTransformer(TransformingInterface[dict[str,pd.DataFrame]]):
             logger.info("Iniciando o fluxo de transformação do parquet taxis_trips! ")
             df, errors = self.concatenate_dfs(data)
             if not errors: 
-                transformed = True 
+                transformed = True
+            df, column_errors = self.create_new_columns(df, self.rules)
+            all_errors = {'concatenation': errors, 'columns': column_errors}
             taxis_trips_info.real_transformed_data['yellow_taxis_trips'] = df 
-            taxis_trips_info.errors['yellow_taxis_trips'] = errors 
+            taxis_trips_info.errors['yellow_taxis_trips'] = all_errors
             taxis_trips_info.transformed_data['yellow_taxis_trips'] = {'specific': transformed}
             taxis_trips_info.info['yellow_taxis_trips'] = {'info': {'tamanho': len(df) , 'tipos_colunas': df.dtypes.astype(str).to_list()}}
             return taxis_trips_info
@@ -51,5 +54,22 @@ class TaxisTripsTransformer(TransformingInterface[dict[str,pd.DataFrame]]):
             raise TaxisTripsErrors("Erro, nenhum DataFrame pode ser concatenado! ")
         df = pd.concat(valid_dfs, ignore_index=True)
         return df, errors
+    def create_new_columns(self, data:pd.DataFrame, rules:dict[str, dict]) -> pd.DataFrame: 
+        new_columns = rules.get('new_columns', {})
+        errors = {}
+        if not new_columns: 
+            logger.warning("Erro, as colunas novas não foram passadas! ")
+            raise TaxisTripsErrors("Erro, as colunas novas não foram passadas! ")
+        logger.info("Iniciando o fluxo de criação de colunas para taxis_trips...")
+        for nome_coluna, regra_coluna in new_columns.items(): 
+            coluna = regra_coluna.get('column', {})
+            new_column_data= regra_coluna.get('column_data', False)
+            if not coluna or not new_column_data: 
+                logger.warning(f"Verifique se a coluna a mapear ou informações da coluna {nome_coluna} foram passadas! ")
+                errors[nome_coluna] = {'error': 'no_info'}
+            else:
+                data[nome_coluna] = data[coluna].astype(str).map(new_column_data)
+                logger.info(f'A coluna {nome_coluna} foi criada, valores: {data[nome_coluna].unique()}')
+        return data, errors
         
         
