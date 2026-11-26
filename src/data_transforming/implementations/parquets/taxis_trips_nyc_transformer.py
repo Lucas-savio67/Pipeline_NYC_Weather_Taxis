@@ -62,8 +62,8 @@ class TaxisTripsTransformer(TransformingInterface[dict[str,pd.DataFrame]]):
             raise TaxisTripsErrors("Erro, as colunas novas não foram passadas! ")
         logger.info("Iniciando o fluxo de criação de colunas para taxis_trips...")
         for nome_coluna, regra_coluna in new_columns.items(): 
-            coluna = regra_coluna['column']
-            new_column_data= regra_coluna['column_data']
+            coluna = regra_coluna.get('column', {})
+            new_column_data= regra_coluna.get('column_data', False)
             if not coluna or not new_column_data: 
                 logger.warning(f"Verifique se a coluna a mapear ou informações da coluna {nome_coluna} foram passadas! ")
                 errors[nome_coluna] = {'error': 'no_info'}

@@ -3,7 +3,7 @@ from src.data_transforming.implementations.parquets.taxis_trips_nyc_transformer 
 from utils.schema_validator import validate_schema
 import pandas as pd
 import pytest
-
+import logging
 
 def test_success_taxis_trips_concatenation():
     fake_rules = {
@@ -108,4 +108,30 @@ def test_success_columns_creating():
     df, errors = transforming.create_new_columns(fake_data, fake_rules)
     pd.testing.assert_frame_equal(df,expected_df)
     assert errors == {}
-
+def test_no_column_rule(): 
+    fake_rules = { 
+            'no_rule_here' : {}
+        }
+    fake_data = pd.DataFrame({ 
+            'fake_column_2': [1,2]
+        })
+    
+        
+    transforming = TaxisTripsTransformer(validate_schema , fake_rules)
+    with pytest.raises(TaxisTripsErrors):
+        transforming.create_new_columns(fake_data, fake_rules)
+def test_no_column_info(caplog): 
+    fake_rules = { 
+                'new_columns': { 
+                    'VendorName': {}
+                }
+            }
+    fake_data = pd.DataFrame({ 
+                'fake_column_2': [1,2]
+            })
+        
+            
+    transforming = TaxisTripsTransformer(validate_schema , fake_rules)
+    with caplog.at_level(logging.WARNING):
+        df, errors = transforming.create_new_columns(fake_data, fake_rules)
+    assert errors == {'VendorName': {'error': 'no_info'}}
